@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444249463396",
+    "project_id": "csci3130groupproject-c46e6",
+    "storage_bucket": "csci3130groupproject-c46e6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444249463396:android:9ee61b0d5b01214efd9d71",
+        "android_client_info": {
+          "package_name": "com.example.csci3130groupproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqr_ZI819k9lLO5t0avPLupHTb8Y1mV5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
