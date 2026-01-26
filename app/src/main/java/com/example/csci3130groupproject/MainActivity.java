@@ -1,26 +1,34 @@
 package com.example.csci3130groupproject;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.Firebase;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
+    // database variables
     FirebaseDatabase database;
     DatabaseReference dbref;
     String DB_URL = "https://csci3130groupproject-c46e6-default-rtdb.firebaseio.com/";
+
+    // UI variables
+    EditText name, email, password, confirmPassword;
+    Spinner role;
+    String[] roles = {"employer", "employee"};
+    Button signup;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +40,22 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // database variables
         database = FirebaseDatabase.getInstance(DB_URL);
-        //dbref = database.getReference("Table");
+        dbref = database.getReference("users");
+
+        initUIComponents();
+    }
+
+    // initializes all UI component text boxes
+    public void initUIComponents(){
+        name = findViewById(R.id.nameEditText);
+        email = findViewById(R.id.emailEditText);
+        password = findViewById(R.id.passwordEditText);
+        confirmPassword = findViewById(R.id.confirmPasswordEditText);
+        role = findViewById(R.id.roleSpinner);
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, roles);
+        role.setAdapter(roleAdapter);
+        signup = findViewById(R.id.signupButton);
     }
 }
