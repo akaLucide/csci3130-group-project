@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="qc_bg_light_blue">#EAF4FF</color>
+    <color name="qc_primary_blue">#4DA3FF</color>
+    <color name="qc_primary_blue_dark">#2E86E6</color>
+    <color name="qc_text_dark">#1F2A37</color>
+
+</resources>

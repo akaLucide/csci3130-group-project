@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Quick Cash</string>
+    <string-array name="job_categories">
+        <item>PC repairing</item>
+        <item>Mowing the lawn</item>
+        <item>Pet services</item>
+        <item>Babysitting</item>
+        <item>Picking up groceries</item>
+    </string-array>
+
+    <string-array name="urgency_levels">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+</resources>
