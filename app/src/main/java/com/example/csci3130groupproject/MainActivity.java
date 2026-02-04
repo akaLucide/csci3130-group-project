@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
+import com.example.csci3130groupproject.BuildConfig;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     // database variables
     FirebaseDatabase database;
     DatabaseReference dbref;
-    String DB_URL = "https://csci3130groupproject-c46e6-default-rtdb.firebaseio.com/";
+    String DB_URL;
 
     // UI variables
     EditText name, email, password, confirmPassword;
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // database variables
+        DB_URL = BuildConfig.FIREBASE_DB_URL;
         database = FirebaseDatabase.getInstance(DB_URL);
         dbref = database.getReference("users");
 
