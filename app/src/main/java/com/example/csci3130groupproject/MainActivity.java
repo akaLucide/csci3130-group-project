@@ -1,31 +1,30 @@
 package com.example.csci3130groupproject;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import com.example.csci3130groupproject.BuildConfig;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
     // database variables
-    FirebaseDatabase database;
-    DatabaseReference dbref;
-    String DB_URL;
+    FirebaseDB database;
 
     // UI variables
     EditText name, email, password, confirmPassword;
     Spinner role;
-    String[] roles = {"employer", "employee"};
+    String[] roles = {"Select a role", "employer", "employee"};
     Button signup;
 
 
@@ -40,12 +39,11 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // database variables
-        DB_URL = BuildConfig.FIREBASE_DB_URL;
-        database = FirebaseDatabase.getInstance(DB_URL);
-        dbref = database.getReference("users");
+        // initialize database
+        database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
 
         initUIComponents();
+        setupSignUpButton();
     }
 
     // initializes all UI component text boxes
@@ -59,4 +57,38 @@ public class MainActivity extends AppCompatActivity {
         role.setAdapter(roleAdapter);
         signup = findViewById(R.id.signupButton);
     }
+
+    protected void setupSignUpButton(){
+        signup.setOnClickListener(this::onClick);
+    }
+
+    protected String emptyField(){
+        // if any field is empty return empty field
+        if (getName().isEmpty() || getEmail().isEmpty() || getPassword().isEmpty() ||
+                getConfirmPassword().isEmpty() || getRole().equals("Select a role")){
+            return "Empty Field";
+        }
+        return "";
+    }
+
+    public void onClick(View view){
+        String errorMessage = emptyField();
+
+        // check params for data here
+
+        // if there was an error then we quit
+        if(!errorMessage.isEmpty()){
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+    }
+
+    // text getters
+    protected String getName(){ return name.getText().toString(); }
+    protected String getEmail(){ return email.getText().toString(); }
+    protected String getPassword(){ return password.getText().toString(); }
+    protected String getConfirmPassword(){ return confirmPassword.getText().toString(); }
+    protected String getRole(){ return role.getSelectedItem().toString(); }
+
 }
