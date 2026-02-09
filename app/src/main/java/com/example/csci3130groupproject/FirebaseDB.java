@@ -20,26 +20,26 @@ public class FirebaseDB {
 
     public void addUser(String name, String email, String password, String role, Context context){
         // create auth user in firebase, if successful store in db, on fail print toast
-        auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener( task -> { // could add activity cast context
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener( task -> {
             if (task.isSuccessful()) {
                 Log.d("Successful", "auth completed");
+
+                // get User id for current user
                 FirebaseUser user = auth.getCurrentUser();
                 String uid = user.getUid();
 
                 // create user for db storage
                 User you = new User(name, email, role);
 
-                // store in db and print error/success
-                db.getReference().child("users").child(uid).setValue(you)
-                        .addOnCompleteListener( write ->{
-                            if (write.isSuccessful()) {
-                                Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "DB write failed", Toast.LENGTH_SHORT).show();
-                                Log.e("DB write", "write failed", task.getException());
-                            }
-                        });
+                // store in db under users->(user id key) and print error/success
+                db.getReference().child("users").child(uid).setValue(you).addOnCompleteListener( write ->{
+                    if (write.isSuccessful()) {
+                        Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "DB write failed", Toast.LENGTH_SHORT).show();
+                        Log.e("DB write", "write failed", task.getException());
+                    }
+                });
             } else {
                 Toast.makeText(context, "Account Authentification failed", Toast.LENGTH_SHORT).show();
                 Log.e("AUTH", "createUser failed", task.getException());
