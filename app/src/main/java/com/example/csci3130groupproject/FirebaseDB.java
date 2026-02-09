@@ -9,5 +9,17 @@ public class FirebaseDB {
         db = FirebaseDatabase.getInstance(URL);
     }
 
+    public boolean addUser(String name, String email, String password, String role){
+        // if duplicate account cancel creation
+        if(duplicate(name, email, password, role)){
+            return true;
+        }
 
+        return false;
+    }
+
+    private boolean duplicate(String name, String email, String password, String role){
+        // iterate through users to find duplicates
+        return false;
+    }
 }

@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     Spinner role;
     String[] roles = {"Select a role", "employer", "employee"};
     Button signup;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +71,31 @@ public class MainActivity extends AppCompatActivity {
         return "";
     }
 
-    public void onClick(View view){
-        String errorMessage = emptyField();
+    protected String passwordMatches(){
+        if (!getPassword().equals(getConfirmPassword())){
+            return "Password does not match";
+        }
+        return "";
+    }
 
-        // check params for data here
+    protected boolean validEmail(){
+        String emailRegex = ".*@.*\\..*$";
+        return Pattern.matches(emailRegex, getEmail());
+    }
+
+    //protected String validPass(){} for password criteria
+
+    public void onClick(View view){
+
+        // check params for data
+        String errorMessage = emptyField();
+        if (errorMessage.isEmpty() && !validEmail()) {
+            errorMessage = "Invalid email";
+
+        }
+        if (errorMessage.isEmpty()) {
+            errorMessage = passwordMatches();
+        }
 
         // if there was an error then we quit
         if(!errorMessage.isEmpty()){
@@ -82,6 +103,23 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // attempt to create account, returns true if duplicate account (cannot create)
+        boolean duplicate = database.addUser(getName(), getEmail(), getPassword(), getRole());
+
+        // if account is duplicate then we fail creation
+        if (duplicate){
+            errorMessage = "Duplicate Accounts";
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(this, "Account Created", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void directToLogin(){
+        // new intent
+        // pass anything
+        // send to login
     }
 
     // text getters
