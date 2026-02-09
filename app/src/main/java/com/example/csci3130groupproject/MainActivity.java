@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         // initialize database
         database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
 
+        // initialize UI
         initUIComponents();
         setupSignUpButton();
     }
@@ -58,60 +59,60 @@ public class MainActivity extends AppCompatActivity {
         signup = findViewById(R.id.signupButton);
     }
 
+    // assigns listener for sign up button
     protected void setupSignUpButton(){
         signup.setOnClickListener(this::onClick);
     }
 
+    // checks if any fields in the form are empty
     protected String emptyField(){
         // if any field is empty return empty field
         if (getName().isEmpty() || getEmail().isEmpty() || getPassword().isEmpty() ||
                 getConfirmPassword().isEmpty() || getRole().equals("Select a role")){
-            return "Empty Field";
+            return " Empty Field";
         }
         return "";
     }
 
+    // checks if passwords match
     protected String passwordMatches(){
         if (!getPassword().equals(getConfirmPassword())){
-            return "Password does not match";
+            return " Password does not match";
         }
         return "";
     }
 
+    // checks naive email regex for correct email
     protected boolean validEmail(){
         String emailRegex = ".*@.*\\..*$";
         return Pattern.matches(emailRegex, getEmail());
     }
 
+    // method to be populated for password criteria
     //protected String validPass(){} for password criteria
 
+    // onclick method for sign up button
     public void onClick(View view){
 
-        // check params for data
+        // call methods to ensure data input is correct, if errorMessage is not empty the user signup will cancel and send an error message
         String errorMessage = emptyField();
-        if (errorMessage.isEmpty() && !validEmail()) {
-            errorMessage = "Invalid email";
+        if (!validEmail()) {
+            errorMessage += " Invalid email";
 
         }
-        if (errorMessage.isEmpty()) {
-            errorMessage = passwordMatches();
-        }
+        errorMessage += passwordMatches();
 
-        // if there was an error then we quit
+        // if the error message is not empty (there was an error) we quit and print the message
         if(!errorMessage.isEmpty()){
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // attempt to create account, returns true if duplicate account (cannot create)
+        // attempts to create account given proper signup, failure handled in FirebaseDB
         database.addUser(getName(), getEmail(), getPassword(), getRole(), this);
     }
 
-    protected void directToLogin(){
-        // new intent
-        // pass anything
-        // send to login
-    }
+    //protected void directToLogin(){  new intent - pass anything - send to login }
 
     // text getters
     protected String getName(){ return name.getText().toString(); }
