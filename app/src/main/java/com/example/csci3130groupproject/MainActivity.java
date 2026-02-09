@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // initialize database
-        database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
+        //database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
 
         initUIComponents();
         setupSignUpButton();
@@ -104,16 +104,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // attempt to create account, returns true if duplicate account (cannot create)
-        boolean duplicate = database.addUser(getName(), getEmail(), getPassword(), getRole());
-
-        // if account is duplicate then we fail creation
-        if (duplicate){
-            errorMessage = "Duplicate Accounts";
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Toast.makeText(this, "Account Created", Toast.LENGTH_SHORT).show();
+        //database.addUser(getName(), getEmail(), getPassword(), getRole(), this);
     }
 
     protected void directToLogin(){
