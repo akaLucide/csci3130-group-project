@@ -6,7 +6,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.content.Intent;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,6 +57,11 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, roles);
         role.setAdapter(roleAdapter);
         signup = findViewById(R.id.signupButton);
+
+        Button goToLogin = findViewById(R.id.goToLoginButton);
+        goToLogin.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        });
     }
 
     // assigns listener for sign up button
