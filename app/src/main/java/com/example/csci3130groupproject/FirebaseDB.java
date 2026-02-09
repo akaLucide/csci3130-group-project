@@ -2,6 +2,7 @@ package com.example.csci3130groupproject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,15 +20,17 @@ public class FirebaseDB {
 
     public void addUser(String name, String email, String password, String role, Context context){
         auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> { // could add activity cast context
+                .addOnCompleteListener( task -> { // could add activity cast context
             if (task.isSuccessful()) {
                 FirebaseUser user = auth.getCurrentUser();
                 String uid = user.getUid();
-
+                if(uid == null){
+                    Log.d("auth", "uid is null");
+                }
                 User you = new User(name, email, role);
 
                 db.getReference().child("users").child(uid).setValue(you)
-                        .addOnCompleteListener(write ->{
+                        .addOnCompleteListener( write ->{
                             if (write.isSuccessful()) {
                                 Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show();
                             } else {
@@ -35,7 +38,8 @@ public class FirebaseDB {
                             }
                         });
             } else {
-                Toast.makeText(context, "Account Authentification failed (email already registered)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Account Authentification failed", Toast.LENGTH_SHORT).show();
+                Log.d("AUTH", "createUser failed", task.getException());
             }
         });
     }

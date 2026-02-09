@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // initialize database
-        //database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
+        database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
 
         initUIComponents();
         setupSignUpButton();
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // attempt to create account, returns true if duplicate account (cannot create)
-        //database.addUser(getName(), getEmail(), getPassword(), getRole(), this);
+        database.addUser(getName(), getEmail(), getPassword(), getRole(), this);
     }
 
     protected void directToLogin(){
