@@ -15,6 +15,10 @@ import com.example.csci3130groupproject.BuildConfig;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+//Added these imports - Mitchell
+import android.content.Intent;
+import android.widget.TextView;
+
 public class LoginActivity extends AppCompatActivity {
 
     EditText email, password;
@@ -29,5 +33,12 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.loginPasswordEditText);
         loginBtn = findViewById(R.id.loginButton);
         signupBtn = findViewById(R.id.goToSignupButton);
+
+        //Navigates to the forgot password screen when the user clicks "Forgot Password?" on login screen - Mitchell
+        //Not authentication logic
+        TextView forgot = findViewById(R.id.forgotPasswordLink);
+        forgot.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+        });
     }
 }
