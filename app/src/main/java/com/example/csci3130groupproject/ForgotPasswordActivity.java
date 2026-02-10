@@ -37,13 +37,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void handlePasswordReset(){
-        String email = emailInput.getText().toString().trim();
-        if (email.isEmpty()) {
+        String emailText = emailInput.getText().toString().trim();
+        if (emailText.isEmpty()) {
             statusMessage.setText("Please enter your email.");
             return;
         }
 
-        String emailText = emailInput.getText().toString().trim();
         if (!Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
             statusMessage.setText("Please enter a valid email address.");
             return;
