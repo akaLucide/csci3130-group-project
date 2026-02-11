@@ -46,4 +46,27 @@ public class FirebaseDB {
             }
         });
     }
+
+    public void loginUser(String email, String password, Context context) {
+        // authenticate user with Firebase
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("Successful", "login completed");
+
+                // get current user
+                FirebaseUser user = auth.getCurrentUser();
+
+                if (user != null) {
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
+                    // Navigate to homescreen logic ----- HERE -----
+
+                } else {
+                    Toast.makeText(context, "Login failed - no user found", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(context, "Login failed - invalid credentials", Toast.LENGTH_SHORT).show();
+                Log.e("AUTH", "signIn failed", task.getException());
+            }
+        });
+    }
 }
