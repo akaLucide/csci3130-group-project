@@ -24,8 +24,8 @@ public class LogoutHelper {
 
         Toast.makeText(activity, "Logged out successfully", Toast.LENGTH_SHORT).show();
 
-        // redirect to home screen and clear the back stack so user can't navigate back
-        Intent intent = new Intent(activity, MainActivity.class);
+        // redirect to login screen and clear the back stack so user can't navigate back
+        Intent intent = new Intent(activity, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         activity.finish();
