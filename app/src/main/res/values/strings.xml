@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Quick Cash</string>
+    <string name="app_name">CSCI3130GroupProject</string>
+    <string name="FIREBASE_DB_URL">https://csci3130groupproject-c46e6-default-rtdb.firebaseio.com/</string>
     <string-array name="job_categories">
         <item>PC repairing</item>
         <item>Mowing the lawn</item>
