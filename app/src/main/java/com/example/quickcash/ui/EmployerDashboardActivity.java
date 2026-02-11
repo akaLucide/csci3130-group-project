@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quickcash.R;
+import com.example.quickcash.data.FirebaseCRUD;
+import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,15 +30,17 @@ public class EmployerDashboardActivity extends AppCompatActivity {
     private EditText etJobDescription;
     private DatabaseReference jobsRef;
     private Button btnPostJob;
+    private FirebaseAuth auth;
+    private FirebaseCRUD crud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employer_dashboard);
         //Firebase
-//        auth = FirebaseAuth.getInstance();
-//        crud = new FirebaseCRUD();
-    //ui
+        auth = FirebaseAuth.getInstance();
+        crud = new FirebaseCRUD();
+        //ui
         spJobCategory = findViewById(R.id.spJobCategory);
         spUrgency = findViewById(R.id.spUrgency);
         btnPickDate = findViewById(R.id.btnPickDate);
@@ -108,4 +112,4 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 //            startActivity(intent);
 //            finish();
 //        }
-    }
+}
