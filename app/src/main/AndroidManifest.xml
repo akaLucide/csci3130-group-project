@@ -12,13 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuickCash">
         <activity
-            android:name=".ui.EmployerDashboardActivity"
+            android:name=".ui.EmployeeDashboardActivity"
             android:exported="false" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.EmployeeDashboardActivity"
+            android:name=".ui.EmployerDashboardActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
