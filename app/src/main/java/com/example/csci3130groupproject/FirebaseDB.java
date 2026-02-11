@@ -18,6 +18,21 @@ public class FirebaseDB {
         auth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * Signs out the currently authenticated user.
+     * Clears the Firebase Auth session so the user is no longer logged in.
+     */
+    public void signOutUser() {
+        auth.signOut();
+    }
+
+    /**
+     * Returns the currently signed-in FirebaseUser, or null if no user is logged in.
+     */
+    public FirebaseUser getCurrentUser() {
+        return auth.getCurrentUser();
+    }
+
     public void addUser(String name, String email, String password, String role, Context context){
         // create auth user in firebase, if successful store in db, on fail print toast
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener( task -> {
