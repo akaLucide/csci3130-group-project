@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "576437387487",
-    "project_id": "quick-cash-1ae0a",
-    "storage_bucket": "quick-cash-1ae0a.firebasestorage.app"
+    "project_number": "444249463396",
+    "project_id": "csci3130groupproject-c46e6",
+    "storage_bucket": "csci3130groupproject-c46e6.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:576437387487:android:c33ae29a5a5b273e2e696a",
+        "mobilesdk_app_id": "1:444249463396:android:9ee61b0d5b01214efd9d71",
         "android_client_info": {
-          "package_name": "com.example.quickcash"
+          "package_name": "com.example.csci3130groupproject"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB5N8KRo4khpn7L1Jnu4LamWAML9XVhzfA"
+          "current_key": "AIzaSyDqr_ZI819k9lLO5t0avPLupHTb8Y1mV5g"
         }
       ],
       "services": {

@@ -1,9 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.QuickCash" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.CSCI3130GroupProject" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.QuickCash" parent="Base.Theme.QuickCash" />
+    <style name="Theme.CSCI3130GroupProject" parent="Base.Theme.CSCI3130GroupProject" />
 </resources>
