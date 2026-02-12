@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.csci3130groupproject.ProfileActivity;
 import com.example.quickcash.R;
 import com.example.quickcash.data.FirebaseCRUD;
 import com.example.quickcash.model.Job;
@@ -20,6 +21,7 @@ import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthRegistrar;
 import com.google.firebase.database.DatabaseReference;
+import com.example.csci3130groupproject.ProfileActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +38,13 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_dashboard);
+        Button btnProfile = findViewById(R.id.btnProfile);
+
+        btnProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(EmployeeDashboardActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        });
+
         //setup UI element
         tvRole = findViewById(R.id.tvRole);
         etJobTitle = findViewById(R.id.etJobTitle);

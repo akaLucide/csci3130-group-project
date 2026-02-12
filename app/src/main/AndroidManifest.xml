@@ -21,6 +21,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity"/>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name="com.example.quickcash.ui.EmployeeDashboardActivity" />
+        <activity android:name="com.example.quickcash.ui.EmployerDashboardActivity" />
     </application>
 
 </manifest>
