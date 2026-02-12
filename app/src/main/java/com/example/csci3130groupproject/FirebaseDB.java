@@ -18,6 +18,21 @@ public class FirebaseDB {
         auth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * Signs out the currently authenticated user.
+     * Clears the Firebase Auth session so the user is no longer logged in.
+     */
+    public void signOutUser() {
+        auth.signOut();
+    }
+
+    /**
+     * Returns the currently signed-in FirebaseUser, or null if no user is logged in.
+     */
+    public FirebaseUser getCurrentUser() {
+        return auth.getCurrentUser();
+    }
+
     public void addUser(String name, String email, String password, String role, Context context){
         // create auth user in firebase, if successful store in db, on fail print toast
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener( task -> {
@@ -43,6 +58,29 @@ public class FirebaseDB {
             } else {
                 Toast.makeText(context, "Account Authentification failed", Toast.LENGTH_SHORT).show();
                 Log.e("AUTH", "createUser failed", task.getException());
+            }
+        });
+    }
+
+    public void loginUser(String email, String password, Context context) {
+        // authenticate user with Firebase
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("Successful", "login completed");
+
+                // get current user
+                FirebaseUser user = auth.getCurrentUser();
+
+                if (user != null) {
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
+                    // Navigate to homescreen logic ----- HERE -----
+
+                } else {
+                    Toast.makeText(context, "Login failed - no user found", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(context, "Login failed - invalid credentials", Toast.LENGTH_SHORT).show();
+                Log.e("AUTH", "signIn failed", task.getException());
             }
         });
     }
