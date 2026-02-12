@@ -24,6 +24,13 @@
             android:paddingBottom="16dp"
             android:textColor="@color/qc_text_dark"/>
 
+        <Button
+            android:id="@+id/btnProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:layout_marginBottom="12dp" />
+
         <!-- Job Category -->
         <TextView
             android:layout_width="match_parent"

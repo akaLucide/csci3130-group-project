@@ -1,6 +1,7 @@
 package com.example.csci3130groupproject;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,12 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        Button btnBack = findViewById(R.id.btnBackToDashboard);
+
+        btnBack.setOnClickListener(v -> {
+            finish();  // closes ProfileActivity and returns to previous screen
+        });
+
         tvName = findViewById(R.id.tvName);
         tvEmail = findViewById(R.id.tvEmail);
         tvRole = findViewById(R.id.tvRole);
@@ -34,7 +41,13 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadProfileSummary() {
+        // Show placeholders while loading
+        tvName.setText("Name: Loading...");
+        tvEmail.setText("Email: Loading...");
+        tvRole.setText("Role: Loading...");
+
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
         if (currentUser == null) {
             tvName.setText("Name: Not available");
             tvEmail.setText("Email: Not available");
@@ -43,10 +56,12 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        // Email can come from Auth immediately
-        tvEmail.setText("Email: " + (currentUser.getEmail() != null ? currentUser.getEmail() : "Not available"));
-
         String uid = currentUser.getUid();
+        String authEmail = currentUser.getEmail();
+
+        // Email can be shown from Auth immediately (if available)
+        tvEmail.setText("Email: " + (authEmail != null ? authEmail : "Not available"));
+
         DatabaseReference userRef = FirebaseDatabase.getInstance(DB_URL)
                 .getReference("users")
                 .child(uid);
@@ -55,23 +70,27 @@ public class ProfileActivity extends AppCompatActivity {
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 if (!snapshot.exists()) {
                     tvName.setText("Name: Not available");
                     tvRole.setText("Role: Not available");
+                    // keep tvEmail as whatever we already set from Auth
                     Toast.makeText(ProfileActivity.this, "Profile not found in database", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                User user = snapshot.getValue(User.class);
-                if (user == null) {
-                    tvName.setText("Name: Not available");
-                    tvRole.setText("Role: Not available");
-                    Toast.makeText(ProfileActivity.this, "Failed to parse profile data", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                String name = snapshot.child("name").getValue(String.class);
+                String role = snapshot.child("role").getValue(String.class);
 
-                tvName.setText("Name: " + (user.name != null ? user.name : "Not available"));
-                tvRole.setText("Role: " + (user.role != null ? user.role : "Not available"));
+                // If you also store email in DB, you can prefer it when Auth email is null:
+                String dbEmail = snapshot.child("email").getValue(String.class);
+
+                tvName.setText("Name: " + (name != null && !name.isEmpty() ? name : "Not available"));
+                tvRole.setText("Role: " + (role != null && !role.isEmpty() ? role : "Not available"));
+
+                if ((authEmail == null || authEmail.isEmpty()) && dbEmail != null && !dbEmail.isEmpty()) {
+                    tvEmail.setText("Email: " + dbEmail);
+                }
             }
 
             @Override

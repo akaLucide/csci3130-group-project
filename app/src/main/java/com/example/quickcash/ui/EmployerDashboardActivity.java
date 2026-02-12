@@ -17,6 +17,7 @@ import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.example.csci3130groupproject.ProfileActivity;
 
 
 import java.util.Calendar;
@@ -37,6 +38,13 @@ public class EmployerDashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employer_dashboard);
+        Button btnProfile = findViewById(R.id.btnProfile);
+
+        btnProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(EmployerDashboardActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        });
+
         //Firebase
         auth = FirebaseAuth.getInstance();
         crud = new FirebaseCRUD();
