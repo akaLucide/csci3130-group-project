@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
+import android.content.Intent;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,24 +64,35 @@ public class FirebaseDB {
     }
 
     public void loginUser(String email, String password, Context context) {
-        // authenticate user with Firebase
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.d("Successful", "login completed");
-
-                // get current user
                 FirebaseUser user = auth.getCurrentUser();
+                String uid = user.getUid();
 
-                if (user != null) {
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
-                    // Navigate to homescreen logic ----- HERE -----
+                // Fetch user role to navigate to correct dashboard
+                db.getReference().child("users").child(uid).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                    @Override
+                    public void onDataChange(com.google.firebase.database.DataSnapshot snapshot) {
+                        User userData = snapshot.getValue(User.class);
 
-                } else {
-                    Toast.makeText(context, "Login failed - no user found", Toast.LENGTH_SHORT).show();
-                }
+                        Intent intent;
+                        if (userData.role.equals("employer")) {
+                            intent = new Intent(context, EmployerDashboardActivity.class);
+                        } else {
+                            intent = new Intent(context, EmployeeDashboardActivity.class);
+                        }
+
+                        context.startActivity(intent);
+                        ((Activity) context).finish();
+                    }
+
+                    @Override
+                    public void onCancelled(com.google.firebase.database.DatabaseError error) {
+                        Toast.makeText(context, "Login failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
             } else {
-                Toast.makeText(context, "Login failed - invalid credentials", Toast.LENGTH_SHORT).show();
-                Log.e("AUTH", "signIn failed", task.getException());
+                Toast.makeText(context, "Invalid credentials", Toast.LENGTH_SHORT).show();
             }
         });
     }
