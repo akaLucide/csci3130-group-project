@@ -1,9 +1,6 @@
-package com.example.quickcash.core;
+package com.example.csci3130groupproject;
 
 import android.text.TextUtils;
-
-import com.example.quickcash.model.Job;
-import com.example.quickcash.model.JobSearchFilter;
 
 import java.util.Locale;
 

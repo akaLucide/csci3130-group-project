@@ -1,10 +1,7 @@
-package com.example.quickcash.data;
+package com.example.csci3130groupproject;
 
 import androidx.annotation.NonNull;
 
-import com.example.quickcash.core.JobMatcher;
-import com.example.quickcash.model.Job;
-import com.example.quickcash.model.JobSearchFilter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
