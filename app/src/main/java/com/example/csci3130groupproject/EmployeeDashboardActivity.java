@@ -1,6 +1,4 @@
-package com.example.quickcash.ui;
-
-import static java.lang.Double.parseDouble;
+package com.example.csci3130groupproject;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,16 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.csci3130groupproject.ProfileActivity;
-import com.example.quickcash.R;
-import com.example.quickcash.data.FirebaseCRUD;
-import com.example.quickcash.model.Job;
-import com.example.quickcash.model.JobSearchFilter;
-import com.google.firebase.Firebase;
+import com.example.csci3130groupproject.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthRegistrar;
-import com.google.firebase.database.DatabaseReference;
-import com.example.csci3130groupproject.ProfileActivity;
 
 import java.util.List;
 import java.util.Locale;

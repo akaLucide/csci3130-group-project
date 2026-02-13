@@ -1,4 +1,4 @@
-package com.example.quickcash.model;
+package com.example.csci3130groupproject;
 
 public class JobSearchFilter {
     public String titleQuery;

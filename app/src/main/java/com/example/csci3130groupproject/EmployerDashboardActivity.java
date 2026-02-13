@@ -1,4 +1,4 @@
-package com.example.quickcash.ui;
+package com.example.csci3130groupproject;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -11,13 +11,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.quickcash.R;
-import com.example.quickcash.data.FirebaseCRUD;
-import com.google.firebase.Firebase;
+import com.example.csci3130groupproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.example.csci3130groupproject.ProfileActivity;
 
 
 import java.util.Calendar;
