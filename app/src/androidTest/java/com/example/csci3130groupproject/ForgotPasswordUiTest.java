@@ -14,18 +14,22 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+// UI tests for Forgot Password screen
 @RunWith(AndroidJUnit4.class)
 public class ForgotPasswordUiTest {
 
+    // Launches the activity before each test
     @Rule
     public ActivityScenarioRule<ForgotPasswordActivity> activityRule =
             new ActivityScenarioRule<>(ForgotPasswordActivity.class);
 
+    // Verifies the screen loads correctly
     @Test
     public void forgotPasswordScreenLoads() {
         onView(withText("Reset Password")).check(matches(isDisplayed()));
     }
 
+    // Verifies invalid email shows error message
     @Test
     public void invalidEmailShowsErrorMessage() {
         onView(withId(R.id.emailInput))
