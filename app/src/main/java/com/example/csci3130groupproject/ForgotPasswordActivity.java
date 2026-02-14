@@ -1,7 +1,6 @@
 package com.example.csci3130groupproject;
 
 import android.os.Bundle;
-import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,8 +20,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_forgot_password);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -36,18 +37,23 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         resetPasswordButton.setOnClickListener(v -> handlePasswordReset());
     }
 
-    private void handlePasswordReset(){
+    private void handlePasswordReset() {
+
         String emailText = emailInput.getText().toString().trim();
+
+        // Empty check
         if (emailText.isEmpty()) {
             statusMessage.setText("Please enter your email.");
             return;
         }
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(emailText).matches()) {
+        // Use pure Java validator (unit-testable)
+        if (!EmailValidator.isValidEmail(emailText)) {
             statusMessage.setText("Please enter a valid email address.");
             return;
         }
 
+        // Success message (no Firebase yet for iteration)
         statusMessage.setText("If this email exists, a reset link will be sent.");
     }
 }
