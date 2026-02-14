@@ -95,7 +95,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // method to be populated for password criteria
-    //protected String validPass(){} for password criteria
+    protected String validPass(){
+        if(getPassword().length() < 6){
+            return " Password is too short";
+        }
+        return "";
+    }
 
     // onclick method for sign up button
     public void onClick(View view){
@@ -106,7 +111,9 @@ public class MainActivity extends AppCompatActivity {
             errorMessage += " Invalid email";
 
         }
+        errorMessage += validPass();
         errorMessage += passwordMatches();
+
 
         // if the error message is not empty (there was an error) we quit and print the message
         if(!errorMessage.isEmpty()){
