@@ -83,4 +83,25 @@ public class LoginUIAutomatorTest {
         assertTrue("Password field should still be visible", passwordField.exists());
         assertTrue("Login button should still be visible", loginButton.exists());
     }
+
+    /**
+     * Acceptance Test 3: Successful Login
+     * Given I enter correct credentials,
+     * When I press login,
+     * Then I am authenticated successfully.
+     *
+     * Note: Using initial user created with sign in logic
+     */
+    @Test
+    public void testSuccessfulLogin() throws UiObjectNotFoundException {
+        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
+        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
+        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
+        emailField.setText("tom@gmail.com");
+        passwordField.setText("password");
+        loginButton.click();
+        device.waitForIdle(4000);
+        UiObject emailFieldAfterLogin = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
+        assertTrue("Should navigate away from login page on successful login", !emailFieldAfterLogin.exists());
+    }
 }
