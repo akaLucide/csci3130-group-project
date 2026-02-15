@@ -104,4 +104,46 @@ public class LoginUIAutomatorTest {
         UiObject emailFieldAfterLogin = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
         assertTrue("Should navigate away from login page on successful login", !emailFieldAfterLogin.exists());
     }
+
+    /**
+     * Acceptance Test 4a: Role-Based Navigation - Employee
+     * Given login is successful,
+     * When my account role is retrieved,
+     * Then I am redirected to the correct role-specific dashboard.
+     *
+     * Note: Using same user as above
+     */
+    @Test
+    public void testRoleBasedNavigation_Employee() throws UiObjectNotFoundException {
+        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
+        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
+        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
+        emailField.setText("tom@gmail.com");
+        passwordField.setText("password");
+        loginButton.click();
+        device.waitForIdle(4000);
+        UiObject searchButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/btnSearch"));
+        assertTrue("Should navigate to Employee Dashboard for employee role", searchButton.exists());
+    }
+
+    /**
+     * Acceptance Test 4b: Role-Based Navigation - Employer
+     * Given login is successful,
+     * When my account role is retrieved,
+     * Then I am redirected to the correct role-specific dashboard.
+     *
+     * Note: Using employer test user
+     */
+    @Test
+    public void testRoleBasedNavigation_Employer() throws UiObjectNotFoundException {
+        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
+        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
+        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
+        emailField.setText("andrewTest@gmail.com");
+        passwordField.setText("password");
+        loginButton.click();
+        device.waitForIdle(4000);
+        UiObject postJobButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/btnPickDate"));
+        assertTrue("Should navigate to Employer Dashboard for employer role", postJobButton.exists());
+    }
 }
