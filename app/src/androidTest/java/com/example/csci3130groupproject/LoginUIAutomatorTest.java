@@ -63,4 +63,24 @@ public class LoginUIAutomatorTest {
         assertTrue("Should remain on login page when fields are empty", emailField.exists());
         assertTrue("Login button should still be visible", loginButton.exists());
     }
+
+    /**
+     * Acceptance Test 2: Invalid Credentials
+     * Given I enter incorrect email/username or password,
+     * When I press login,
+     * Then I see a clear error message and remain on the login screen.
+     */
+    @Test
+    public void testInvalidCredentials() throws UiObjectNotFoundException {
+        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
+        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
+        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
+        emailField.setText("invalid@test.com");
+        passwordField.setText("invaliduser");
+        loginButton.click();
+        device.waitForIdle(3000);
+        assertTrue("Should remain on login page with invalid credentials", emailField.exists());
+        assertTrue("Password field should still be visible", passwordField.exists());
+        assertTrue("Login button should still be visible", loginButton.exists());
+    }
 }
