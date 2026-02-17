@@ -57,7 +57,7 @@ public class FirebaseDB {
                     }
                 });
             } else {
-                Toast.makeText(context, "Account Authentification failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Account authentification failed, already exists", Toast.LENGTH_SHORT).show();
                 Log.e("AUTH", "createUser failed", task.getException());
             }
         });
