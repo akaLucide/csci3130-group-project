@@ -59,9 +59,8 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         btnPostJob = findViewById(R.id.btnPostJob);
         //btnPostJob.setOnClickListener(v -> postJob());
 
-        //logout button
-        FirebaseDB database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
-        btnLogout.setOnClickListener(v -> LogoutHelper.performLogout(this, database));
+        // Wire up logout button (safe to call even if no logout button exists in layout)
+        LogoutHelper.setupLogoutButton(this);
 
         // Setup Job Category dropdown
         ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
