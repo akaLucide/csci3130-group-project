@@ -26,6 +26,10 @@ public class LogoutHelper {
         logoutButton.setOnClickListener(v -> performLogout(activity, database));
     }
 
+    /**
+    * Signs out the user, shows a confirmation toast, and redirects to LoginActivity.
+    * Usage: called internally by setupLogoutButton or directly from any activity.
+    */
     public static void performLogout(Activity activity, FirebaseDB database) {
         // Sign out using FirebaseDB wrapper
         database.signOutUser();

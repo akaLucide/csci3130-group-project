@@ -56,7 +56,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         //search button
         btnSearch.setOnClickListener(v -> onSearchClicked());
 
-        // Wire up logout button (safe to call even if no logout button exists in layout)
+        // Wire up logout button
         LogoutHelper.setupLogoutButton(this);
 
     }

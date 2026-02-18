@@ -59,7 +59,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         btnPostJob = findViewById(R.id.btnPostJob);
         //btnPostJob.setOnClickListener(v -> postJob());
 
-        // Wire up logout button (safe to call even if no logout button exists in layout)
+        // Wire up logout button
         LogoutHelper.setupLogoutButton(this);
 
         // Setup Job Category dropdown
