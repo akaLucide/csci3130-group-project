@@ -146,4 +146,27 @@ public class LoginUIAutomatorTest {
         UiObject postJobButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/btnPickDate"));
         assertTrue("Should navigate to Employer Dashboard for employer role", postJobButton.exists());
     }
+
+    /**
+     * Acceptance Test 5: No Crash on Errors
+     * Given the login fails (invalid credentials/network issue),
+     * When the app handles it,
+     * Then the app does not crash and shows a readable message.
+     */
+    @Test
+    public void testLoginFailure_DoesNotCrash() throws UiObjectNotFoundException {
+        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
+        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
+        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
+        emailField.setText("invalid@test.com");
+        passwordField.setText("invalidpassword");
+        loginButton.click();
+        device.waitForIdle(3000);
+        assertTrue("App should not crash - login page should still be visible", emailField.exists());
+        assertTrue("App should not crash - login button should still be clickable", loginButton.exists());
+        assertTrue("App should not crash - password field should still be visible", passwordField.exists());
+        loginButton.click();
+        device.waitForIdle(1000);
+        assertTrue("App should remain responsive after error", loginButton.exists());
+    }
 }
