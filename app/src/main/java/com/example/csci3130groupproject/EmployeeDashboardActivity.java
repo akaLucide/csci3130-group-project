@@ -56,9 +56,8 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         //search button
         btnSearch.setOnClickListener(v -> onSearchClicked());
 
-        //logout button
-        FirebaseDB database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
-        btnLogout.setOnClickListener(v -> LogoutHelper.performLogout(this, database));
+        // Wire up logout button (safe to call even if no logout button exists in layout)
+        LogoutHelper.setupLogoutButton(this);
 
     }
     private void onSearchClicked() {
