@@ -58,7 +58,10 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         btnPostJob = findViewById(R.id.btnPostJob);
         //btnPostJob.setOnClickListener(v -> postJob());
-        //btnLogout.setOnClickListener(v -> logout());
+
+        //logout button
+        FirebaseDB database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
+        btnLogout.setOnClickListener(v -> LogoutHelper.performLogout(this, database));
 
         // Setup Job Category dropdown
         ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
@@ -109,12 +112,4 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
     }
 
-//        private void logout() {
-//            auth.signOut();
-//
-//            Intent intent = new Intent(this, LoginActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-//            finish();
-//        }
 }
