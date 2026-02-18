@@ -55,8 +55,10 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
 
         //search button
         btnSearch.setOnClickListener(v -> onSearchClicked());
+
         //logout button
-        //btnLogout.setOnClickListener(v -> logout());
+        FirebaseDB database = new FirebaseDB(getResources().getString(R.string.FIREBASE_DB_URL));
+        btnLogout.setOnClickListener(v -> LogoutHelper.performLogout(this, database));
 
     }
     private void onSearchClicked() {
@@ -116,14 +118,5 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         try { return Double.parseDouble(s); }
         catch (Exception e) { return def; }
     }
-
-//    private void logout() {
-//        auth.signOut();
-//        Intent i = new Intent(this, LoginActivity.class); // make sure LoginActivity is in ui package
-//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(i);
-//        finish();
-//    }
-
 
 }

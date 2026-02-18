@@ -2,21 +2,9 @@ package com.example.csci3130groupproject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.widget.Button;
 import android.widget.Toast;
 
 public class LogoutHelper {
-
-    // replace 0 with the actual logout button resource ID e.g. R.id.btnLogout
-    private static final int LOGOUT_BUTTON_ID = 0;
-
-    public static void setupLogoutButton(Activity activity, FirebaseDB database) {
-        Button logoutButton = activity.findViewById(LOGOUT_BUTTON_ID);
-        if (logoutButton == null) {
-            return; // no logout button in this layout, skip safely
-        }
-        logoutButton.setOnClickListener(v -> performLogout(activity, database));
-    }
 
     public static void performLogout(Activity activity, FirebaseDB database) {
         // sign out using FirebaseDB wrapper
