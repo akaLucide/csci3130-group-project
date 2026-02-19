@@ -64,7 +64,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // validates that fields are not empty
+    /**
+     * @refactor Extracted validation logic into separate method to separate logic from the click itself
+     * - Andrew
+     */
     private String emptyField() {
         if (getEmail().isEmpty() || getPassword().isEmpty()) {
             return "Please fill in all fields";
@@ -72,7 +75,10 @@ public class LoginActivity extends AppCompatActivity {
         return "";
     }
 
-    // onclick method for login button
+    /**
+     * @refactor Extracted click handler into separate method to separate logic from the click itself
+     * - Andrew
+     */
     public void onLoginClick(View view) {
         // check for empty fields
         String errorMessage = emptyField();
