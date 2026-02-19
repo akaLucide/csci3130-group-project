@@ -58,7 +58,9 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         btnPostJob = findViewById(R.id.btnPostJob);
         //btnPostJob.setOnClickListener(v -> postJob());
-        //btnLogout.setOnClickListener(v -> logout());
+
+        // Wire up logout button
+        LogoutHelper.setupLogoutButton(this);
 
         // Setup Job Category dropdown
         ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
@@ -109,12 +111,4 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
     }
 
-//        private void logout() {
-//            auth.signOut();
-//
-//            Intent intent = new Intent(this, LoginActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-//            finish();
-//        }
 }

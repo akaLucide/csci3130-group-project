@@ -10,6 +10,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+//Added these imports - Mitchell
+import android.content.Intent;
+import android.widget.TextView;
+
 public class LoginActivity extends AppCompatActivity {
 
     // database variables
@@ -39,6 +43,13 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.loginPasswordEditText);
         loginBtn = findViewById(R.id.loginButton);
         signupBtn = findViewById(R.id.goToSignupButton);
+
+        //Navigates to the forgot password screen when the user clicks "Forgot Password?" on login screen - Mitchell
+        //Not authentication logic
+        TextView forgot = findViewById(R.id.forgotPasswordLink);
+        forgot.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+        });
     }
 
     // assigns listener for login button
@@ -53,7 +64,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // validates that fields are not empty
+    /**
+     * @refactor Extracted validation logic into separate method to separate logic from the click itself
+     * - Andrew
+     */
     private String emptyField() {
         if (getEmail().isEmpty() || getPassword().isEmpty()) {
             return "Please fill in all fields";
@@ -61,7 +75,10 @@ public class LoginActivity extends AppCompatActivity {
         return "";
     }
 
-    // onclick method for login button
+    /**
+     * @refactor Extracted click handler into separate method to separate logic from the click itself
+     * - Andrew
+     */
     public void onLoginClick(View view) {
         // check for empty fields
         String errorMessage = emptyField();

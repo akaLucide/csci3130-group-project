@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.content.Intent;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     Spinner role;
     String[] roles = {"Select a role", "employer", "employee"};
     Button signup;
+    TextView status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +60,17 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, roles);
         role.setAdapter(roleAdapter);
         signup = findViewById(R.id.signupButton);
+        status = findViewById(R.id.statusLabel);
 
         Button goToLogin = findViewById(R.id.goToLoginButton);
         goToLogin.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         });
+    }
+
+    // changes status message for signup form
+    protected void setStatusLabel(String message){
+        status.setText(message);
     }
 
     // assigns listener for sign up button
@@ -71,61 +79,78 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // checks if any fields in the form are empty
-    protected String emptyField(){
+    protected void emptyField(){
         // if any field is empty return empty field
         if (getName().isEmpty() || getEmail().isEmpty() || getPassword().isEmpty() ||
                 getConfirmPassword().isEmpty() || getRole().equals("Select a role")){
-            return " Empty Field";
+            setStatusLabel("Empty Field");
+            return;
         }
-        return "";
+        setStatusLabel("");
+
     }
 
     // checks if passwords match
-    protected String passwordMatches(){
+    protected void passwordMatches(){
         if (!getPassword().equals(getConfirmPassword())){
-            return " Password does not match";
+            setStatusLabel("Password does not match");
+            return;
         }
-        return "";
+        setStatusLabel("");
     }
 
     // checks naive email regex for correct email
-    protected boolean validEmail(){
+    protected void validEmail(){
         String emailRegex = ".*@.*\\..*$";
-        return Pattern.matches(emailRegex, getEmail());
+        if(!Pattern.matches(emailRegex, getEmail())){
+            setStatusLabel("Invalid Email");
+            return;
+        }
+        setStatusLabel("");
     }
 
     // method to be populated for password criteria
-    protected String validPass(){
+    protected void validPass(){
         if(getPassword().length() < 6){
-            return " Password is too short";
+            setStatusLabel("Password is too short");
+            return;
         }
-        return "";
+        setStatusLabel("");
     }
 
     // onclick method for sign up button
     public void onClick(View view){
 
         // call methods to ensure data input is correct, if errorMessage is not empty the user signup will cancel and send an error message
-        String errorMessage = emptyField();
-        if (!validEmail()) {
-            errorMessage += " Invalid email";
-
+        emptyField();
+        if(status.getText().toString().isEmpty()){
+            validEmail();
         }
-        errorMessage += validPass();
-        errorMessage += passwordMatches();
-
+        if(status.getText().toString().isEmpty()){
+            validPass();
+        }
+        if(status.getText().toString().isEmpty()){
+            passwordMatches();
+        }
 
         // if the error message is not empty (there was an error) we quit and print the message
-        if(!errorMessage.isEmpty()){
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+        if(!status.getText().toString().isEmpty()){
             return;
         }
 
         // attempts to create account given proper signup, failure handled in FirebaseDB
-        database.addUser(getName(), getEmail(), getPassword(), getRole(), this);
+        database.addUser(getName(), getEmail(), getPassword(), getRole(), this)
+                .addOnSuccessListener(unused -> {
+                    directToLogin();
+                }).addOnFailureListener(e -> {
+                    setStatusLabel("Authentification failed, duplicate account");
+                });
     }
 
-    //protected void directToLogin(){  new intent - pass anything - send to login }
+    protected void directToLogin(){
+         Intent login = new Intent(MainActivity.this, LoginActivity.class);
+         startActivity(login);
+    }
 
     // text getters
     protected String getName(){ return name.getText().toString(); }
