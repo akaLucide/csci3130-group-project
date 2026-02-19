@@ -5,6 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import android.widget.Button;
 
+import com.example.csci3130groupproject.data.FirebaseDB;
+import com.example.csci3130groupproject.ui.EmployerDashboardActivity;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

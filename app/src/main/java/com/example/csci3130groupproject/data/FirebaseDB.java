@@ -1,4 +1,4 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.data;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,12 +6,13 @@ import android.util.Log;
 import android.widget.Toast;
 import android.content.Intent;
 
+import com.example.csci3130groupproject.core.User;
+import com.example.csci3130groupproject.ui.EmployeeDashboardActivity;
+import com.example.csci3130groupproject.ui.EmployerDashboardActivity;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FirebaseDB {
     FirebaseDatabase db;

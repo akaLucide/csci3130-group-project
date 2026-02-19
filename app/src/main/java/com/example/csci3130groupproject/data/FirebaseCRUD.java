@@ -1,7 +1,10 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.data;
 
 import androidx.annotation.NonNull;
 
+import com.example.csci3130groupproject.core.Job;
+import com.example.csci3130groupproject.core.JobMatcher;
+import com.example.csci3130groupproject.core.JobSearchFilter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

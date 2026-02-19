@@ -1,4 +1,4 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.csci3130groupproject.data.FirebaseCRUD;
+import com.example.csci3130groupproject.core.Job;
+import com.example.csci3130groupproject.core.JobSearchFilter;
+import com.example.csci3130groupproject.core.LogoutHelper;
 import com.example.csci3130groupproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 

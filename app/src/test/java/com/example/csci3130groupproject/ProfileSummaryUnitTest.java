@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.csci3130groupproject.ui.ProfileActivity;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

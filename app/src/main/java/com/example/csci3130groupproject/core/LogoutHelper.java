@@ -1,9 +1,13 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.core;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.csci3130groupproject.R;
+import com.example.csci3130groupproject.data.FirebaseDB;
+import com.example.csci3130groupproject.ui.LoginActivity;
 
 /**
  * Centralized logout helper.

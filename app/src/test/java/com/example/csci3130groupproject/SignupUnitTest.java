@@ -1,11 +1,11 @@
 package com.example.csci3130groupproject;
 
-import android.content.Context;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.example.csci3130groupproject.ui.MainActivity;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;

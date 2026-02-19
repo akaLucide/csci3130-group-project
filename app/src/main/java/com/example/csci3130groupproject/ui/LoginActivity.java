@@ -1,4 +1,4 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.ui;
 
 
 import android.content.Intent;
@@ -11,8 +11,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 //Added these imports - Mitchell
-import android.content.Intent;
 import android.widget.TextView;
+
+import com.example.csci3130groupproject.data.FirebaseDB;
+import com.example.csci3130groupproject.R;
 
 public class LoginActivity extends AppCompatActivity {
 

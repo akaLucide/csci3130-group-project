@@ -1,4 +1,4 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.ui;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.csci3130groupproject.data.FirebaseCRUD;
+import com.example.csci3130groupproject.core.LogoutHelper;
 import com.example.csci3130groupproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;

@@ -1,4 +1,4 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.ui;
 
 import android.os.Bundle;
 import android.view.View;
@@ -8,15 +8,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.content.Intent;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
+import com.example.csci3130groupproject.data.FirebaseDB;
+import com.example.csci3130groupproject.R;
+
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {

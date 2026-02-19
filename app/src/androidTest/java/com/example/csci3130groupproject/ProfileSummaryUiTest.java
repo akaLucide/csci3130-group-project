@@ -11,6 +11,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.example.csci3130groupproject.ui.ProfileActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.Before;

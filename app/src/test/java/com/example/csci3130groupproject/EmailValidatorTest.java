@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import com.example.csci3130groupproject.core.EmailValidator;
+
 // Unit tests for EmailValidator
 public class EmailValidatorTest {
 
