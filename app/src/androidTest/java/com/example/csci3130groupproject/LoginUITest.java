@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class LoginUIAutomatorTest {
+public class LoginUITest {
 
     private static final int LAUNCH_TIMEOUT = 5000;
     final String launcherPackage = "com.example.csci3130groupproject";
