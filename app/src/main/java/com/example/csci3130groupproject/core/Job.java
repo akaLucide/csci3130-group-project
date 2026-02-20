@@ -1,4 +1,4 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.core;
 
 public class Job {
     public String title;

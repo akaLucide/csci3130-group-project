@@ -1,4 +1,4 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.csci3130groupproject.data.FirebaseCRUD;
+import com.example.csci3130groupproject.core.Job;
+import com.example.csci3130groupproject.core.JobSearchFilter;
+import com.example.csci3130groupproject.core.LogoutHelper;
 import com.example.csci3130groupproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -61,8 +65,9 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
 
         //search button
         btnSearch.setOnClickListener(v -> onSearchClicked());
-        //logout button
-        //btnLogout.setOnClickListener(v -> logout());
+
+        // Wire up logout button
+        LogoutHelper.setupLogoutButton(this);
 
     }
     private void onSearchClicked() {
@@ -122,14 +127,5 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         try { return Double.parseDouble(s); }
         catch (Exception e) { return def; }
     }
-
-//    private void logout() {
-//        auth.signOut();
-//        Intent i = new Intent(this, LoginActivity.class); // make sure LoginActivity is in ui package
-//        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(i);
-//        finish();
-//    }
-
 
 }

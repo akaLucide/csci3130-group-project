@@ -1,4 +1,4 @@
-package com.example.csci3130groupproject;
+package com.example.csci3130groupproject.ui;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.csci3130groupproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
