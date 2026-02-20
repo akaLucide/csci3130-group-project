@@ -37,32 +37,44 @@ public class EmployerDashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employer_dashboard);
+
+        //Firebase
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            android.widget.Toast.makeText(this, "Session expired. Please log in.", android.widget.Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+        jobsRef = FirebaseDatabase.getInstance().getReference("jobs");
+        crud = new FirebaseCRUD();
+
+        // UI
         Button btnProfile = findViewById(R.id.btnProfile);
+        spJobCategory = findViewById(R.id.spJobCategory);
+        spUrgency = findViewById(R.id.spUrgency);
+        btnPickDate = findViewById(R.id.btnPickDate);
+        tvSelectedDate = findViewById(R.id.tvSelectedDate);
+        etJobDescription = findViewById(R.id.etJobDescription);
+        btnLogout = findViewById(R.id.btnLogout);
+        btnPostJob = findViewById(R.id.btnPostJob);
+
+        // Listeners AFTER views are initialized
+        btnPostJob.setOnClickListener(v -> postJob());
 
         btnProfile.setOnClickListener(v -> {
             Intent intent = new Intent(EmployerDashboardActivity.this, ProfileActivity.class);
             startActivity(intent);
         });
 
-        //Firebase
-        auth = FirebaseAuth.getInstance();
-        crud = new FirebaseCRUD();
-        //ui
-        spJobCategory = findViewById(R.id.spJobCategory);
-        spUrgency = findViewById(R.id.spUrgency);
-        btnPickDate = findViewById(R.id.btnPickDate);
-        tvSelectedDate = findViewById(R.id.tvSelectedDate);
-
-        etJobDescription = findViewById(R.id.etJobDescription);
-        btnLogout = findViewById(R.id.btnLogout);
-
-        jobsRef = FirebaseDatabase.getInstance().getReference("jobs");
-
+<<<<<<< HEAD:app/src/main/java/com/example/csci3130groupproject/EmployerDashboardActivity.java
+=======
         btnPostJob = findViewById(R.id.btnPostJob);
         //btnPostJob.setOnClickListener(v -> postJob());
 
         // Wire up logout button
         LogoutHelper.setupLogoutButton(this);
+>>>>>>> origin/main:app/src/main/java/com/example/csci3130groupproject/ui/EmployerDashboardActivity.java
 
         // Setup Job Category dropdown
         ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
@@ -113,4 +125,58 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
     }
 
+<<<<<<< HEAD:app/src/main/java/com/example/csci3130groupproject/EmployerDashboardActivity.java
+private void postJob() {
+    android.widget.Toast.makeText(this, "Post Job clicked", android.widget.Toast.LENGTH_SHORT).show();
+
+    String category = spJobCategory.getSelectedItem() != null ? spJobCategory.getSelectedItem().toString() : "";
+    String urgency  = spUrgency.getSelectedItem() != null ? spUrgency.getSelectedItem().toString() : "";
+    String date     = tvSelectedDate.getText() != null ? tvSelectedDate.getText().toString() : "";
+    String desc     = etJobDescription.getText() != null ? etJobDescription.getText().toString().trim() : "";
+
+    android.util.Log.d("RTDB", "postJob() category=" + category + ", urgency=" + urgency + ", date=" + date + ", descLen=" + desc.length());
+
+    if (desc.isEmpty()) {
+        etJobDescription.setError("Description required");
+        android.widget.Toast.makeText(this, "Description required", android.widget.Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    if (date.equals("No date selected")) {
+        android.widget.Toast.makeText(this, "Pick a date first", android.widget.Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    String uid = (auth.getCurrentUser() != null) ? auth.getCurrentUser().getUid() : null;
+    if (uid == null) {
+        android.widget.Toast.makeText(this, "Not logged in. Please login again.", android.widget.Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    java.util.Map<String, Object> job = new java.util.HashMap<>();
+    job.put("category", category);
+    job.put("urgency", urgency);
+    job.put("date", date);
+    job.put("description", desc);
+    job.put("employerId", uid);
+    job.put("createdAt", System.currentTimeMillis());
+
+    String key = jobsRef.push().getKey();
+    if (key == null) {
+        android.widget.Toast.makeText(this, "Failed to generate job id", android.widget.Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    jobsRef.child(key).setValue(job)
+            .addOnSuccessListener(unused -> {
+                android.util.Log.d("RTDB", "Job posted key=" + key);
+                android.widget.Toast.makeText(this, "Job posted!", android.widget.Toast.LENGTH_SHORT).show();
+            })
+            .addOnFailureListener(e -> {
+                android.util.Log.e("RTDB", "Failed to post job", e);
+                android.widget.Toast.makeText(this, "Post failed: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+            });
+}
+=======
+>>>>>>> origin/main:app/src/main/java/com/example/csci3130groupproject/ui/EmployerDashboardActivity.java
 }
