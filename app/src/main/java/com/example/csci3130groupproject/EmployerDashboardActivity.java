@@ -38,6 +38,12 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         //Firebase
         auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            android.widget.Toast.makeText(this, "Session expired. Please log in.", android.widget.Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
         jobsRef = FirebaseDatabase.getInstance().getReference("jobs");
         crud = new FirebaseCRUD();
 
@@ -109,14 +115,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
     }
 
-//        private void logout() {
-//            auth.signOut();
-//
-//            Intent intent = new Intent(this, LoginActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-//            finish();
-//        }
 private void postJob() {
     android.widget.Toast.makeText(this, "Post Job clicked", android.widget.Toast.LENGTH_SHORT).show();
 
@@ -162,12 +160,6 @@ private void postJob() {
             .addOnSuccessListener(unused -> {
                 android.util.Log.d("RTDB", "Job posted key=" + key);
                 android.widget.Toast.makeText(this, "Job posted!", android.widget.Toast.LENGTH_SHORT).show();
-
-                // optional UI reset
-                etJobDescription.setText("");
-                tvSelectedDate.setText("No date selected");
-                spJobCategory.setSelection(0);
-                spUrgency.setSelection(0);
             })
             .addOnFailureListener(e -> {
                 android.util.Log.e("RTDB", "Failed to post job", e);

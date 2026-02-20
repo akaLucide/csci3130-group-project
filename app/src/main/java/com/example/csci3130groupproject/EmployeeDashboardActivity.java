@@ -51,6 +51,12 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
 
         //init Firebase
         auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "Session expired. Please log in.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
         crud = new FirebaseCRUD();
 
         //search button
