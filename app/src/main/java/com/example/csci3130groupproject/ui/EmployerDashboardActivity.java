@@ -67,15 +67,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-<<<<<<< HEAD:app/src/main/java/com/example/csci3130groupproject/EmployerDashboardActivity.java
-=======
-        btnPostJob = findViewById(R.id.btnPostJob);
-        //btnPostJob.setOnClickListener(v -> postJob());
-
-        // Wire up logout button
-        LogoutHelper.setupLogoutButton(this);
->>>>>>> origin/main:app/src/main/java/com/example/csci3130groupproject/ui/EmployerDashboardActivity.java
-
         // Setup Job Category dropdown
         ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
                 this,
@@ -125,7 +116,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
     }
 
-<<<<<<< HEAD:app/src/main/java/com/example/csci3130groupproject/EmployerDashboardActivity.java
 private void postJob() {
     android.widget.Toast.makeText(this, "Post Job clicked", android.widget.Toast.LENGTH_SHORT).show();
 
@@ -177,6 +167,4 @@ private void postJob() {
                 android.widget.Toast.makeText(this, "Post failed: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
             });
 }
-=======
->>>>>>> origin/main:app/src/main/java/com/example/csci3130groupproject/ui/EmployerDashboardActivity.java
 }
