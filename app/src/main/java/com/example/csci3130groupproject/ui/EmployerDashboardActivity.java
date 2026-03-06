@@ -28,10 +28,12 @@ public class EmployerDashboardActivity extends AppCompatActivity {
     private TextView tvSelectedDate;
     private int selectedYear, selectedMonth, selectedDay;
     private EditText etJobDescription;
+    private EditText etJobLocation;
     private DatabaseReference jobsRef;
     private Button btnPostJob;
     private FirebaseAuth auth;
     private FirebaseCRUD crud;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         etJobDescription = findViewById(R.id.etJobDescription);
         btnLogout = findViewById(R.id.btnLogout);
         btnPostJob = findViewById(R.id.btnPostJob);
+        etJobLocation = findViewById(R.id.etJobLocation);
 
         // Listeners AFTER views are initialized
         btnPostJob.setOnClickListener(v -> postJob());
@@ -126,8 +129,11 @@ private void postJob() {
     String urgency  = spUrgency.getSelectedItem() != null ? spUrgency.getSelectedItem().toString() : "";
     String date     = tvSelectedDate.getText() != null ? tvSelectedDate.getText().toString() : "";
     String desc     = etJobDescription.getText() != null ? etJobDescription.getText().toString().trim() : "";
-
-    android.util.Log.d("RTDB", "postJob() category=" + category + ", urgency=" + urgency + ", date=" + date + ", descLen=" + desc.length());
+    // read address
+    String locationAddress = etJobLocation.getText() != null
+            ? etJobLocation.getText().toString().trim()
+            : "";
+    android.util.Log.d("RTDB", "postJob() category=" + category + ", urgency=" + urgency + ", date=" + date + ", descLen=" + desc.length() + ", address=" + locationAddress);;
 
     if (desc.isEmpty()) {
         etJobDescription.setError("Description required");
@@ -137,6 +143,12 @@ private void postJob() {
 
     if (date.equals("No date selected")) {
         android.widget.Toast.makeText(this, "Pick a date first", android.widget.Toast.LENGTH_SHORT).show();
+        return;
+    }
+    // add: validate address
+    if (locationAddress.isEmpty()) {
+        etJobLocation.setError("Location address required");
+        android.widget.Toast.makeText(this, "Location address required", android.widget.Toast.LENGTH_SHORT).show();
         return;
     }
 
@@ -151,6 +163,8 @@ private void postJob() {
     job.put("urgency", urgency);
     job.put("date", date);
     job.put("description", desc);
+    // add: save address to Firebase
+    job.put("locationAddress", locationAddress);
     job.put("employerId", uid);
     job.put("createdAt", System.currentTimeMillis());
 
@@ -164,6 +178,9 @@ private void postJob() {
             .addOnSuccessListener(unused -> {
                 android.util.Log.d("RTDB", "Job posted key=" + key);
                 android.widget.Toast.makeText(this, "Job posted!", android.widget.Toast.LENGTH_SHORT).show();
+                etJobDescription.setText("");
+                etJobLocation.setText("");
+                tvSelectedDate.setText("No date selected");
             })
             .addOnFailureListener(e -> {
                 android.util.Log.e("RTDB", "Failed to post job", e);
