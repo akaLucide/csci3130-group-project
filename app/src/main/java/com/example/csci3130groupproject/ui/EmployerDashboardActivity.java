@@ -38,6 +38,9 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employer_dashboard);
 
+        // enable logout button
+        LogoutHelper.setupLogoutButton(this);
+
         //Firebase
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
