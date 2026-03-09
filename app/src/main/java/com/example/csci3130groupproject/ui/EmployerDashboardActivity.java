@@ -17,7 +17,7 @@ import com.example.csci3130groupproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
+import com.example.csci3130groupproject.util.JobValidator;
 
 import java.util.Calendar;
 
@@ -147,15 +147,13 @@ private void postJob() {
     android.util.Log.d("RTDB", "postJob() category=" + category + ", urgency=" + urgency + ", date=" + date + ", descLen=" + desc.length() + ", address=" + locationAddress+
             ", durationHours=" + durationHours +
             ", salary=" + salary);
-
-    if (desc.isEmpty()) {
-        etJobDescription.setError("Description required");
-        android.widget.Toast.makeText(this, "Description required", android.widget.Toast.LENGTH_SHORT).show();
-        return;
-    }
-
-    if (date.equals("No date selected")) {
-        android.widget.Toast.makeText(this, "Pick a date first", android.widget.Toast.LENGTH_SHORT).show();
+    //for JobValidator
+    String validationResult = JobValidator.validate(desc, date);
+    if (!validationResult.equals("OK")) {
+        if (validationResult.equals("Description required")) {
+            etJobDescription.setError(validationResult);
+        }
+        android.widget.Toast.makeText(this, validationResult, android.widget.Toast.LENGTH_SHORT).show();
         return;
     }
     // add: validate address
