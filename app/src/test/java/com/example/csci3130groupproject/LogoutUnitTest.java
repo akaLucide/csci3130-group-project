@@ -18,7 +18,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 30)
+@Config(sdk = 30, application = TestApplication.class)
 public class LogoutUnitTest {
 
     ActivityController<EmployerDashboardActivity> controller;
