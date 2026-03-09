@@ -34,6 +34,9 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_employee_dashboard);
         Button btnProfile = findViewById(R.id.btnProfile);
 
+        // enable logout button
+        LogoutHelper.setupLogoutButton(this);
+
         btnProfile.setOnClickListener(v -> {
             Intent intent = new Intent(EmployeeDashboardActivity.this, ProfileActivity.class);
             startActivity(intent);

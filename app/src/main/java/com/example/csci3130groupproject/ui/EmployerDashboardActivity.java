@@ -28,15 +28,20 @@ public class EmployerDashboardActivity extends AppCompatActivity {
     private TextView tvSelectedDate;
     private int selectedYear, selectedMonth, selectedDay;
     private EditText etJobDescription;
+    private EditText etJobLocation;
     private DatabaseReference jobsRef;
     private Button btnPostJob;
     private FirebaseAuth auth;
     private FirebaseCRUD crud;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employer_dashboard);
+
+        // enable logout button
+        LogoutHelper.setupLogoutButton(this);
 
         //Firebase
         auth = FirebaseAuth.getInstance();
@@ -58,6 +63,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         etJobDescription = findViewById(R.id.etJobDescription);
         btnLogout = findViewById(R.id.btnLogout);
         btnPostJob = findViewById(R.id.btnPostJob);
+        etJobLocation = findViewById(R.id.etJobLocation);
 
         // Listeners AFTER views are initialized
         btnPostJob.setOnClickListener(v -> postJob());
@@ -66,15 +72,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
             Intent intent = new Intent(EmployerDashboardActivity.this, ProfileActivity.class);
             startActivity(intent);
         });
-
-<<<<<<< HEAD:app/src/main/java/com/example/csci3130groupproject/EmployerDashboardActivity.java
-=======
-        btnPostJob = findViewById(R.id.btnPostJob);
-        //btnPostJob.setOnClickListener(v -> postJob());
-
-        // Wire up logout button
-        LogoutHelper.setupLogoutButton(this);
->>>>>>> origin/main:app/src/main/java/com/example/csci3130groupproject/ui/EmployerDashboardActivity.java
 
         // Setup Job Category dropdown
         ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
@@ -125,7 +122,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
     }
 
-<<<<<<< HEAD:app/src/main/java/com/example/csci3130groupproject/EmployerDashboardActivity.java
 private void postJob() {
     android.widget.Toast.makeText(this, "Post Job clicked", android.widget.Toast.LENGTH_SHORT).show();
 
@@ -133,8 +129,11 @@ private void postJob() {
     String urgency  = spUrgency.getSelectedItem() != null ? spUrgency.getSelectedItem().toString() : "";
     String date     = tvSelectedDate.getText() != null ? tvSelectedDate.getText().toString() : "";
     String desc     = etJobDescription.getText() != null ? etJobDescription.getText().toString().trim() : "";
-
-    android.util.Log.d("RTDB", "postJob() category=" + category + ", urgency=" + urgency + ", date=" + date + ", descLen=" + desc.length());
+    // read address
+    String locationAddress = etJobLocation.getText() != null
+            ? etJobLocation.getText().toString().trim()
+            : "";
+    android.util.Log.d("RTDB", "postJob() category=" + category + ", urgency=" + urgency + ", date=" + date + ", descLen=" + desc.length() + ", address=" + locationAddress);;
 
     if (desc.isEmpty()) {
         etJobDescription.setError("Description required");
@@ -144,6 +143,12 @@ private void postJob() {
 
     if (date.equals("No date selected")) {
         android.widget.Toast.makeText(this, "Pick a date first", android.widget.Toast.LENGTH_SHORT).show();
+        return;
+    }
+    // add: validate address
+    if (locationAddress.isEmpty()) {
+        etJobLocation.setError("Location address required");
+        android.widget.Toast.makeText(this, "Location address required", android.widget.Toast.LENGTH_SHORT).show();
         return;
     }
 
@@ -158,6 +163,8 @@ private void postJob() {
     job.put("urgency", urgency);
     job.put("date", date);
     job.put("description", desc);
+    // add: save address to Firebase
+    job.put("locationAddress", locationAddress);
     job.put("employerId", uid);
     job.put("createdAt", System.currentTimeMillis());
 
@@ -171,12 +178,13 @@ private void postJob() {
             .addOnSuccessListener(unused -> {
                 android.util.Log.d("RTDB", "Job posted key=" + key);
                 android.widget.Toast.makeText(this, "Job posted!", android.widget.Toast.LENGTH_SHORT).show();
+                etJobDescription.setText("");
+                etJobLocation.setText("");
+                tvSelectedDate.setText("No date selected");
             })
             .addOnFailureListener(e -> {
                 android.util.Log.e("RTDB", "Failed to post job", e);
                 android.widget.Toast.makeText(this, "Post failed: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
             });
 }
-=======
->>>>>>> origin/main:app/src/main/java/com/example/csci3130groupproject/ui/EmployerDashboardActivity.java
 }
