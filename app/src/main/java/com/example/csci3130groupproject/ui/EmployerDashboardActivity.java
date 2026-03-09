@@ -17,7 +17,7 @@ import com.example.csci3130groupproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
+import com.example.csci3130groupproject.util.JobValidator;
 
 import java.util.Calendar;
 
@@ -29,6 +29,8 @@ public class EmployerDashboardActivity extends AppCompatActivity {
     private int selectedYear, selectedMonth, selectedDay;
     private EditText etJobDescription;
     private EditText etJobLocation;
+    private EditText etDurationHours;
+    private EditText etSalary;
     private DatabaseReference jobsRef;
     private Button btnPostJob;
     private FirebaseAuth auth;
@@ -64,6 +66,8 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         btnPostJob = findViewById(R.id.btnPostJob);
         etJobLocation = findViewById(R.id.etJobLocation);
+        etDurationHours = findViewById(R.id.etDurationHours);
+        etSalary = findViewById(R.id.etSalary);
 
         // Listeners AFTER views are initialized
         btnPostJob.setOnClickListener(v -> postJob());
@@ -133,22 +137,41 @@ private void postJob() {
     String locationAddress = etJobLocation.getText() != null
             ? etJobLocation.getText().toString().trim()
             : "";
-    android.util.Log.d("RTDB", "postJob() category=" + category + ", urgency=" + urgency + ", date=" + date + ", descLen=" + desc.length() + ", address=" + locationAddress);;
+    String durationHours = etDurationHours.getText() != null
+            ? etDurationHours.getText().toString().trim()
+            : "";
 
-    if (desc.isEmpty()) {
-        etJobDescription.setError("Description required");
-        android.widget.Toast.makeText(this, "Description required", android.widget.Toast.LENGTH_SHORT).show();
-        return;
-    }
-
-    if (date.equals("No date selected")) {
-        android.widget.Toast.makeText(this, "Pick a date first", android.widget.Toast.LENGTH_SHORT).show();
+    String salary = etSalary.getText() != null
+            ? etSalary.getText().toString().trim()
+            : "";
+    android.util.Log.d("RTDB", "postJob() category=" + category + ", urgency=" + urgency + ", date=" + date + ", descLen=" + desc.length() + ", address=" + locationAddress+
+            ", durationHours=" + durationHours +
+            ", salary=" + salary);
+    //for JobValidator
+    String validationResult = JobValidator.validate(desc, date);
+    if (!validationResult.equals("OK")) {
+        if (validationResult.equals("Description required")) {
+            etJobDescription.setError(validationResult);
+        }
+        android.widget.Toast.makeText(this, validationResult, android.widget.Toast.LENGTH_SHORT).show();
         return;
     }
     // add: validate address
     if (locationAddress.isEmpty()) {
         etJobLocation.setError("Location address required");
         android.widget.Toast.makeText(this, "Location address required", android.widget.Toast.LENGTH_SHORT).show();
+        return;
+    }
+    //add duration hours
+    if (durationHours.isEmpty()) {
+        etDurationHours.setError("Duration required");
+        android.widget.Toast.makeText(this, "Duration required", android.widget.Toast.LENGTH_SHORT).show();
+        return;
+    }
+    //add salary
+    if (salary.isEmpty()) {
+        etSalary.setError("Salary required");
+        android.widget.Toast.makeText(this, "Salary required", android.widget.Toast.LENGTH_SHORT).show();
         return;
     }
 
@@ -165,6 +188,9 @@ private void postJob() {
     job.put("description", desc);
     // add: save address to Firebase
     job.put("locationAddress", locationAddress);
+    //add save duration and salary to Firebase
+    job.put("durationHours", durationHours);
+    job.put("salary", salary);
     job.put("employerId", uid);
     job.put("createdAt", System.currentTimeMillis());
 
@@ -180,6 +206,8 @@ private void postJob() {
                 android.widget.Toast.makeText(this, "Job posted!", android.widget.Toast.LENGTH_SHORT).show();
                 etJobDescription.setText("");
                 etJobLocation.setText("");
+                etDurationHours.setText("");
+                etSalary.setText("");
                 tvSelectedDate.setText("No date selected");
             })
             .addOnFailureListener(e -> {
