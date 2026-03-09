@@ -5,9 +5,14 @@ public class Job {
     public String category;
     public double salaryPerHour;
     public double expectedDurationHours;
+    public String urgency;
+    public String date;
+    public String description;
+    public String locationAddress;
+    public String employerId;
+    public long createdAt;
 
-    public Double lat;
-    public Double lng;
+
 
     public Job() {}
 }
