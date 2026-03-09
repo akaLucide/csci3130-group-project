@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +25,8 @@ import java.util.Locale;
 public class EmployeeDashboardActivity extends AppCompatActivity {
     //UI element
     private TextView tvRole, tvResults, tvResultsList;
-    private EditText etJobTitle, etMinSalary, etMaxSalary, etMaxDuration, etVicinityKm;
+    private AutoCompleteTextView etJobTitle;
+    private EditText etMinSalary, etMaxSalary, etMaxDuration, etVicinityKm;
     private Button btnSearch, btnLogout;
     private FirebaseAuth auth;
     private FirebaseCRUD crud;
@@ -45,6 +48,12 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         //setup UI element
         tvRole = findViewById(R.id.tvRole);
         etJobTitle = findViewById(R.id.etJobTitle);
+
+        // Set up autocomplete suggestions from job categories
+        String[] categories = getResources().getStringArray(R.array.job_categories);
+        ArrayAdapter<String> autoAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, categories);
+        etJobTitle.setAdapter(autoAdapter);
         etMinSalary = findViewById(R.id.etMinSalary);
         etMaxSalary = findViewById(R.id.etMaxSalary);
         etMaxDuration = findViewById(R.id.etMaxDuration);
