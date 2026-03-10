@@ -1,5 +1,6 @@
 package com.example.csci3130groupproject.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -106,7 +107,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                                 date = "No Date";
                             }
                             String title = category + " - " + date;
-                            addJobRow(title);
+                            addJobRow(title, jobSnap.getKey()); // add ref for job in db
                         }
                     }
 
@@ -119,7 +120,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                 });
     }
 
-    private void addJobRow(String jobTitle) {
+    private void addJobRow(String jobTitle, String jobRef) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
@@ -137,6 +138,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         Button btnApplicants = new Button(this);
         btnApplicants.setText("Applicants");
+        btnApplicants.setTag(jobTitle + "-applicants");
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 0,
@@ -158,7 +160,9 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
 
         btnApplicants.setOnClickListener(v -> {
-            // placeholder
+            Intent intent = new Intent(EmployerDashboardActivity.this, ApplicationReviewActivity.class);
+            intent.putExtra("jobRef", jobRef);
+            startActivity(intent);
         });
 
         buttonRow.addView(btnDetails);
