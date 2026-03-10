@@ -48,7 +48,7 @@ public class ApplicationReviewUITest {
     }
 
     @Test
-    public void applicationsVisible() throws UiObjectNotFoundException{
+    public void applicationsVisible() throws UiObjectNotFoundException {
 
     }
 

@@ -106,6 +106,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
     //added posted jobs by this employer
     private void loadPostedJobs() {
         tvPostedJobs.setText("Posted Jobs:\nLoading...");
