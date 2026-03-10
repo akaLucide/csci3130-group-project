@@ -12,52 +12,43 @@
 
         <TextView
             android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Profile Summary"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginBottom="20dp" />
 
         <TextView
             android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Name:"
             android:textSize="18sp"
-            android:layout_marginBottom="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginBottom="12dp" />
 
         <TextView
             android:id="@+id/tvEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Email:"
             android:textSize="18sp"
-            android:layout_marginBottom="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginBottom="12dp" />
 
         <TextView
             android:id="@+id/tvRole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Role:"
             android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/tvPostedJobs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:text="Posted Jobs:"
-            android:textSize="16sp" />
+            android:layout_marginBottom="24dp" />
 
         <Button
             android:id="@+id/btnBackToDashboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Back to Dashboard"
-            android:layout_marginTop="24dp"
             android:padding="12dp" />
-
 
     </LinearLayout>
 </ScrollView>
