@@ -1,5 +1,10 @@
 package com.example.csci3130groupproject;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -44,21 +49,26 @@ public class ApplicationReviewUITest {
         password.setText("password");
         UiObject login = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/loginButton"));
         login.clickAndWaitForNewWindow();
-        // redirect to a job/create a job with applicants on bob@gmail.com or other account for testing
     }
 
     @Test
-    public void applicationsVisible() throws UiObjectNotFoundException {
-
+    public void applicationPageVisible() {
+        onView(withTagValue(is("Babysitting - 2026-03-11-applicants"))).perform(click());
+        UiObject backbtn = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/backToEmployerDashboardBtn"));
+        assertTrue(backbtn.exists());
     }
 
     @Test
-    public void noApplications() {
-
+    public void applicantsExist() throws UiObjectNotFoundException{
+        onView(withTagValue(is("Babysitting - 2026-03-11-applicants"))).perform(click());
+        UiObject numApplicants = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/numApplicantsTextView"));
+        assertEquals("2 Applicants", numApplicants.getText());
     }
 
     @Test
-    public void applicantDetailsVisible() {
-
+    public void noApplications() throws UiObjectNotFoundException{
+        onView(withTagValue(is("Mowing the lawn - 2026-03-11-applicants"))).perform(click());
+        UiObject numApplicants = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/numApplicantsTextView"));
+        assertEquals("0 Applicants", numApplicants.getText());
     }
 }
