@@ -24,7 +24,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
     //UI element
     private TextView tvRole, tvResults, tvResultsList;
     private EditText etJobTitle, etMinSalary, etMaxSalary, etMaxDuration, etVicinityKm;
-    private Button btnSearch, btnLogout;
+    private Button btnSearch, btnLogout, btnMapView;
     private FirebaseAuth auth;
     private FirebaseCRUD crud;
 
@@ -56,6 +56,8 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         tvResults = findViewById(R.id.tvResults);
         tvResultsList = findViewById(R.id.tvResultsList);
 
+        btnMapView = findViewById(R.id.btnMapView);
+
         //init Firebase
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
@@ -68,6 +70,12 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
 
         //search button
         btnSearch.setOnClickListener(v -> onSearchClicked());
+
+        // map view button
+        btnMapView.setOnClickListener(v -> {
+            Intent intent = new Intent(EmployeeDashboardActivity.this, MapBasedJobViewingActivity.class);
+            startActivity(intent);
+        });
 
         // Wire up logout button
         LogoutHelper.setupLogoutButton(this);

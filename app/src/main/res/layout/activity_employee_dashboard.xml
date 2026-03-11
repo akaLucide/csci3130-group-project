@@ -99,7 +99,7 @@
             android:backgroundTint="@color/qc_primary_blue_dark"
             android:textColor="@android:color/white"/>
     </LinearLayout>
-    
+
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
