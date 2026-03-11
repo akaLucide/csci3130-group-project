@@ -64,6 +64,7 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         });
         favbtn.setOnClickListener(v -> {
             fav = !fav;
+            loadApplicants();
         });
     }
 
@@ -89,15 +90,21 @@ public class ApplicationReviewActivity extends AppCompatActivity {
 
                 for (DataSnapshot applicant : snapshot.getChildren()) {
                     // add other identifiers to be displayed from applicants
+                    String id = applicant.getKey();
+                    if(applicant.child("favourite").getValue(Boolean.class) == null){
+                        appRef.child(id).child("favourite").setValue(false);
+                    }
 
                     // use a check here for favourite clicked to filter the results, if fav and applicant is favourite...
+                    if(fav && applicant.child("favourite").getValue(Boolean.class)) {
 
-                    String id = applicant.getKey();
-                    String name = applicant.child("name").getValue(String.class);
-                    String date = applicant.child("date").getValue(String.class);
 
-                    String title = name + " - " + date;
-                    addApplicantRow(title, id);
+                        String name = applicant.child("name").getValue(String.class);
+                        String date = applicant.child("date").getValue(String.class);
+
+                        String title = name + " - " + date;
+                        addApplicantRow(title, id);
+                    }
                 }
             }
 
@@ -139,7 +146,23 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         });
 
         btnFavourite.setOnClickListener(v -> {
-            // read snapshot and set favourite to opposite itself
+            DatabaseReference appRef = FirebaseDatabase.getInstance(DB_URL).getReference("jobs/" + jobRef + "/applicants/" + appID);
+            appRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Boolean favourited = snapshot.child("favourite").getValue(Boolean.class);
+                    if (favourited == null){
+                        favourited = false;
+                    }
+                    favourited = !favourited;
+                    appRef.child("favourite").setValue(favourited);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(ApplicationReviewActivity.this,"Failed to favourite", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         buttonRow.addView(btnContact);
