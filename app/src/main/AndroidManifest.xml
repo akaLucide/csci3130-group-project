@@ -28,6 +28,7 @@
         <activity android:name=".ui.EmployeeDashboardActivity" />
         <activity android:name=".ui.EmployerDashboardActivity" />
         <activity android:name=".ui.PostJobActivity" />
+        <activity android:name=".ui.JobSubmissionActivity" />
     </application>
 
 </manifest>
