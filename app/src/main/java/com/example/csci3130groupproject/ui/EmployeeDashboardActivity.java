@@ -82,8 +82,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
             return;
         }
 
-        DatabaseReference jobsRef = FirebaseDatabase.getInstance(DB_URL)
-                .getReference("jobs");
+        DatabaseReference jobsRef = FirebaseDatabase.getInstance(DB_URL).getReference("jobs");
 
         jobsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -99,6 +98,8 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                 }
 
                 for (DataSnapshot jobSnap : snapshot.getChildren()) {
+                    String jobId = jobSnap.getKey();
+
                     Job job = new Job();
                     job.title = jobSnap.child("title").getValue(String.class);
                     job.category = jobSnap.child("category").getValue(String.class);
@@ -108,12 +109,19 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                     job.date = jobSnap.child("date").getValue(String.class);
 
                     Double salary = jobSnap.child("salaryPerHour").getValue(Double.class);
-                    job.salaryPerHour = (salary != null) ? salary : 0.0;
+                    job.salaryPerHour = salary != null ? salary : 0.0;
 
                     Double duration = jobSnap.child("expectedDurationHours").getValue(Double.class);
-                    job.expectedDurationHours = (duration != null) ? duration : 0.0;
+                    job.expectedDurationHours = duration != null ? duration : 0.0;
 
-                    addJobRow(job);
+                    if (job.category == null || job.category.trim().isEmpty()) {
+                        job.category = "Untitled Job";
+                    }
+                    if (job.date == null || job.date.trim().isEmpty()) {
+                        job.date = "No Date";
+                    }
+
+                    addJobRow(jobId, job);
                 }
             }
 
@@ -126,7 +134,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         });
     }
 
-    private void addJobRow(Job job) {
+    private void addJobRow(String jobId, Job job) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
@@ -174,7 +182,10 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         });
 
         btnApply.setOnClickListener(v -> {
-            // placeholder for job application
+            Intent intent = new Intent(EmployeeDashboardActivity.this, JobSubmissionActivity.class);
+            intent.putExtra("jobId", jobId);
+            intent.putExtra("jobTitle", JobDetailsFormatter.dashboardTitle(job));
+            startActivity(intent);
         });
 
         buttonRow.addView(btnDetails);
