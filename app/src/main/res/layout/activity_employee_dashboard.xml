@@ -74,14 +74,32 @@
         android:inputType="numberDecimal"
         android:paddingTop="8dp" />
 
-    <Button
-        android:id="@+id/btnSearch"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search Jobs"
-        android:layout_marginTop="10dp"
-    android:backgroundTint="@color/qc_primary_blue_dark"
-    android:textColor="@android:color/white"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/btnMapView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Map View"
+            android:backgroundTint="@color/qc_primary_blue_dark"
+            android:textColor="@android:color/white"/>
+
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            android:text="Search Jobs"
+            android:backgroundTint="@color/qc_primary_blue_dark"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
+    
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
