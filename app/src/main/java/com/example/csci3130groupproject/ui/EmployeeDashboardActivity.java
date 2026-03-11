@@ -162,7 +162,10 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         });
 
         btnApply.setOnClickListener(v -> {
-            // placeholder for job application
+            Intent intent = new Intent(EmployeeDashboardActivity.this, JobSubmissionActivity.class);
+            intent.putExtra("jobId", jobId);
+            intent.putExtra("jobTitle", jobTitle);
+            startActivity(intent);
         });
 
         buttonRow.addView(btnDetails);
