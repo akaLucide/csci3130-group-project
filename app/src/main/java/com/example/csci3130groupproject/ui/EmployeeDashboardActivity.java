@@ -15,12 +15,14 @@ import com.example.csci3130groupproject.core.Job;
 import com.example.csci3130groupproject.core.JobSearchFilter;
 import com.example.csci3130groupproject.core.LogoutHelper;
 import com.example.csci3130groupproject.R;
+import com.example.csci3130groupproject.util.JobDetailsFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 import java.util.Locale;
 
 public class EmployeeDashboardActivity extends AppCompatActivity {
+
     //UI element
     private TextView tvRole, tvResults, tvResultsList;
     private EditText etJobTitle, etMinSalary, etMaxSalary, etMaxDuration, etVicinityKm;
@@ -32,6 +34,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_dashboard);
+
         Button btnProfile = findViewById(R.id.btnProfile);
 
         // enable logout button
@@ -66,6 +69,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
             finish();
             return;
         }
+
         crud = new FirebaseCRUD();
 
         //search button
@@ -79,8 +83,8 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
 
         // Wire up logout button
         LogoutHelper.setupLogoutButton(this);
-
     }
+
     private void onSearchClicked() {
         // Read inputs into a filter object
         JobSearchFilter filter = new JobSearchFilter();
@@ -88,7 +92,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         filter.minSalary = parseDouble(etMinSalary.getText().toString().trim(), 0.0);
         filter.maxSalary = parseDouble(etMaxSalary.getText().toString().trim(), Double.MAX_VALUE);
         filter.maxDuration = parseDouble(etMaxDuration.getText().toString().trim(), Double.MAX_VALUE);
-        filter.vicinityKm = parseDouble(etVicinityKm.getText().toString().trim(), Double.MAX_VALUE); // not used yet
+        filter.vicinityKm = parseDouble(etVicinityKm.getText().toString().trim(), Double.MAX_VALUE);
 
         // Call data layer
         crud.searchJobs(filter, new FirebaseCRUD.JobsCallback() {
@@ -105,38 +109,24 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
     }
 
     private void showJobs(List<Job> jobs) {
-        tvResults.setText("Results: " + jobs.size());
+        tvResults.setText(JobDetailsFormatter.resultsCountText(jobs.size()));
+        tvResultsList.setText(JobDetailsFormatter.formatList(jobs));
 
         if (jobs.isEmpty()) {
-            tvResultsList.setText("No matching jobs found.");
             Toast.makeText(this, "No matching jobs found.", Toast.LENGTH_SHORT).show();
-            return;
+        } else {
+            Toast.makeText(this, "Found " + jobs.size() + " job(s).", Toast.LENGTH_SHORT).show();
         }
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < jobs.size(); i++) {
-            sb.append(i + 1).append(") ")
-                    .append(buildJobLine(jobs.get(i)))
-                    .append("\n\n");
-        }
-        tvResultsList.setText(sb.toString());
-        Toast.makeText(this, "Found " + jobs.size() + " job(s).", Toast.LENGTH_SHORT).show();
-    }
-
-    private String buildJobLine(Job job) {
-        String title = (!TextUtils.isEmpty(job.title)) ? job.title : "(No title)";
-        String category = (job.category != null) ? job.category : "(No category)";
-
-        return "Title: " + title
-                + "\nCategory: " + category
-                + "\nSalary/hr: $" + job.salaryPerHour
-                + "\nDuration: " + job.expectedDurationHours + " hours";
     }
 
     private double parseDouble(String s, double def) {
-        if (TextUtils.isEmpty(s)) return def;
-        try { return Double.parseDouble(s); }
-        catch (Exception e) { return def; }
+        if (TextUtils.isEmpty(s)) {
+            return def;
+        }
+        try {
+            return Double.parseDouble(s);
+        } catch (Exception e) {
+            return def;
+        }
     }
-
 }
