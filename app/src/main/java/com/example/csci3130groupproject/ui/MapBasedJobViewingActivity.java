@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.Intent;
+import com.google.android.gms.maps.model.Marker;
+
 public class MapBasedJobViewingActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -49,6 +52,25 @@ public class MapBasedJobViewingActivity extends FragmentActivity implements OnMa
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+
+        mMap.setOnMarkerClickListener(marker -> {
+            Job clickedJob = (Job) marker.getTag();
+
+            if (clickedJob != null) {
+                Intent intent = new Intent(MapBasedJobViewingActivity.this, JobDetailsActivity.class);
+                intent.putExtra("title", clickedJob.title);
+                intent.putExtra("category", clickedJob.category);
+                intent.putExtra("description", clickedJob.description);
+                intent.putExtra("locationAddress", clickedJob.locationAddress);
+                intent.putExtra("salaryPerHour", clickedJob.salaryPerHour);
+                intent.putExtra("expectedDurationHours", clickedJob.expectedDurationHours);
+                intent.putExtra("urgency", clickedJob.urgency);
+                intent.putExtra("date", clickedJob.date);
+                startActivity(intent);
+            }
+
+            return true;
+        });
 
         JobSearchFilter filter = new JobSearchFilter();
 
@@ -92,10 +114,14 @@ public class MapBasedJobViewingActivity extends FragmentActivity implements OnMa
 
                     String title = (job.category != null && !job.category.isEmpty()) ? job.category : "Job";                    String snippet = job.locationAddress;
 
-                    mMap.addMarker(new MarkerOptions()
+                    Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(jobLatLng)
                             .title(title)
                             .snippet(snippet));
+
+                    if (marker != null) {
+                        marker.setTag(job);
+                    }
 
                     if (!movedCamera) {
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(jobLatLng, 11f));
