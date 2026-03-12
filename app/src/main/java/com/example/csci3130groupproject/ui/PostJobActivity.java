@@ -139,14 +139,15 @@ public class PostJobActivity extends AppCompatActivity {
             return;
         }
 
+        //Bug fix for duration and salary not populating in postings
         java.util.Map<String, Object> job = new java.util.HashMap<>();
         job.put("category", category);
         job.put("urgency", urgency);
         job.put("date", date);
         job.put("description", desc);
         job.put("locationAddress", locationAddress);
-        job.put("durationHours", durationHours);
-        job.put("salary", salary);
+        job.put("expectedDurationHours", Double.parseDouble(durationHours));
+        job.put("salaryPerHour", Double.parseDouble(salary));
         job.put("employerId", uid);
         job.put("createdAt", System.currentTimeMillis());
 
