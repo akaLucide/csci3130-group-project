@@ -98,7 +98,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                         }
 
                         for (DataSnapshot jobSnap : snapshot.getChildren()) {
-                            // changed: load full job data instead of only category and date
+                            // Load full job data instead of only category and date
                             Job job = new Job();
                             job.title = jobSnap.child("title").getValue(String.class);
                             job.category = jobSnap.child("category").getValue(String.class);
@@ -120,7 +120,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                                 job.date = "No Date";
                             }
 
-                            // changed: pass full Job object to the row
+                            // Pass full Job object to the row
                             addJobRow(job);
                         }
                     }
@@ -134,14 +134,14 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                 });
     }
 
-    // changed: method now accepts Job instead of only job title
+    // Method now accepts Job instead of only job title
     private void addJobRow(Job job) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
 
         TextView tvJobTitle = new TextView(this);
-        // changed: use formatter for dashboard title
+        // Use formatter for dashboard title
         tvJobTitle.setText(JobDetailsFormatter.dashboardTitle(job));
         tvJobTitle.setTextSize(18f);
         tvJobTitle.setPadding(0, 0, 0, 8);
