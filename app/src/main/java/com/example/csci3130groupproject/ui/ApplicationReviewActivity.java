@@ -63,46 +63,62 @@ public class ApplicationReviewActivity extends AppCompatActivity {
             startActivity(intent);
         });
         favbtn.setOnClickListener(v -> {
+            // toggles the favourite search and loads the applicants
             fav = !fav;
             loadApplicants();
         });
     }
 
     private void loadApplicants(){
-        layoutApplicants.removeAllViews();
+        layoutApplicants.removeAllViews(); // remove all boxes
 
+        // reference to the job applicants that we are loading applicants for
         DatabaseReference appRef = FirebaseDatabase.getInstance(DB_URL).getReference("jobs/" + jobRef + "/applicants");
 
+        // take snapshot of applicants to load
         appRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 layoutApplicants.removeAllViews();
 
-                String appMessage;
+                String appMessage; // screen message that displays number of applicants, if 0 we in following if statement
                 if (!snapshot.exists()) {
+                    // if no applicants return
                     appMessage = "0 applicants";
                     numAppsTextNotifier.setText(appMessage);
                     return;
                 }else{
+                    // if applicants count number and display
                     appMessage = snapshot.getChildrenCount() + " applicants";
                     numAppsTextNotifier.setText(appMessage);
                 }
 
+                // for each applicant in snapshot
                 for (DataSnapshot applicant : snapshot.getChildren()) {
-                    // add other identifiers to be displayed from applicants
+                    // get applicant identity for details
                     String id = applicant.getKey();
+
+                    // if the applicant does not have a field that displays whether it is a favourite, add the field and set it false
                     if(applicant.child("favourite").getValue(Boolean.class) == null){
                         appRef.child(id).child("favourite").setValue(false);
                     }
 
-                    // use a check here for favourite clicked to filter the results, if fav and applicant is favourite...
+                    // if the favourite filter is on and the applicant is a favourite then we display (displays all favourited applicants)
                     if(fav && applicant.child("favourite").getValue(Boolean.class)) {
 
-
+                        // grab details from applicant to display in layout
                         String name = applicant.child("name").getValue(String.class);
-                        String date = applicant.child("date").getValue(String.class);
+                        String email = applicant.child("email").getValue(String.class);
+                        String title = name + " - " + email;
+                        // call row to be created, pass applicant title and applicant id (to be used in favourite button)
+                        addApplicantRow(title, id);
 
-                        String title = name + " - " + date;
+                    // if not favourited display all applicants
+                    }else if(!fav){
+                        // grab details for loading layout row
+                        String name = applicant.child("name").getValue(String.class);
+                        String email = applicant.child("email").getValue(String.class);
+                        String title = name + " - " + email;
                         addApplicantRow(title, id);
                     }
                 }
@@ -146,14 +162,19 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         });
 
         btnFavourite.setOnClickListener(v -> {
+            // if favourited get reference to applicant that was clicked
             DatabaseReference appRef = FirebaseDatabase.getInstance(DB_URL).getReference("jobs/" + jobRef + "/applicants/" + appID);
             appRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    // set favourite to false if it does not exist
                     Boolean favourited = snapshot.child("favourite").getValue(Boolean.class);
                     if (favourited == null){
                         favourited = false;
                     }
+
+                    // set favourite to opposite of what it is (false -> true, true -> false)
                     favourited = !favourited;
                     appRef.child("favourite").setValue(favourited);
                 }

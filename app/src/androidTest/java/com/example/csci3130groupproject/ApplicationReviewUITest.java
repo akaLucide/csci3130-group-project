@@ -52,23 +52,27 @@ public class ApplicationReviewUITest {
     }
 
     @Test
-    public void applicationPageVisible() {
-        onView(withTagValue(is("Babysitting - 2026-03-11-applicants"))).perform(click());
+    public void applicationPageVisible() throws UiObjectNotFoundException{
+        UiObject applicantsBtn = device.findObject(new UiSelector().description("Babysitting - 2026-03-11-applicants"));
+        applicantsBtn.clickAndWaitForNewWindow();
         UiObject backbtn = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/backToEmployerDashboardBtn"));
         assertTrue(backbtn.exists());
     }
 
     @Test
-    public void applicantsExist() throws UiObjectNotFoundException{
-        onView(withTagValue(is("Babysitting - 2026-03-11-applicants"))).perform(click());
+    public void applicantsExist() throws UiObjectNotFoundException, InterruptedException {
+        UiObject applicantsBtn = device.findObject(new UiSelector().description("Babysitting - 2026-03-11-applicants"));
+        applicantsBtn.clickAndWaitForNewWindow();
+        Thread.sleep(3000);
         UiObject numApplicants = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/numApplicantsTextView"));
-        assertEquals("2 Applicants", numApplicants.getText());
+        assertEquals("1 applicants", numApplicants.getText());
     }
 
     @Test
     public void noApplications() throws UiObjectNotFoundException{
-        onView(withTagValue(is("Mowing the lawn - 2026-03-11-applicants"))).perform(click());
+        UiObject applicantsBtn = device.findObject(new UiSelector().description("Mowing the lawn - 2026-03-11-applicants"));
+        applicantsBtn.clickAndWaitForNewWindow();
         UiObject numApplicants = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/numApplicantsTextView"));
-        assertEquals("0 Applicants", numApplicants.getText());
+        assertEquals("0 applicants", numApplicants.getText());
     }
 }

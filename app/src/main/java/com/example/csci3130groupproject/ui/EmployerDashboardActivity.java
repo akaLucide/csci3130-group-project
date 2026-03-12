@@ -138,7 +138,8 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         Button btnApplicants = new Button(this);
         btnApplicants.setText("Applicants");
-        btnApplicants.setTag(jobTitle + "-applicants");
+        // set description to grab label for tests
+        btnApplicants.setContentDescription(jobTitle + "-applicants");
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 0,
@@ -160,6 +161,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
 
         btnApplicants.setOnClickListener(v -> {
+            // open application review
             Intent intent = new Intent(EmployerDashboardActivity.this, ApplicationReviewActivity.class);
             intent.putExtra("jobRef", jobRef);
             startActivity(intent);
