@@ -18,7 +18,7 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 30)
+@Config(sdk = 30, application = TestApplication.class)
 public class SignupUnitTest {
 
     ActivityController<MainActivity> controller;
