@@ -28,7 +28,6 @@ public final class JobDetailsFormatter {
         String urgency = valueOrFallback(job.urgency);
         String date = valueOrFallback(job.date);
 
-        // Format a single job's detailed information
         return "Title: " + title
                 + "\nCategory: " + category
                 + "\nDescription: " + description
@@ -39,12 +38,10 @@ public final class JobDetailsFormatter {
                 + "\nDate: " + date;
     }
 
-    // Format the results counter text
     public static String resultsCountText(int count) {
         return "Results: " + count;
     }
 
-    // Format a list of jobs for display
     public static String formatList(List<Job> jobs) {
         if (jobs == null || jobs.isEmpty()) {
             return "No matching jobs found.";
@@ -63,7 +60,30 @@ public final class JobDetailsFormatter {
         return sb.toString();
     }
 
-    // Return fallback text if value is empty
+    public static String dashboardTitle(Job job) {
+        if (job == null) {
+            return "Untitled Job";
+        }
+
+        String title = valueOrFallback(job.title);
+        if (!title.equals("Not provided")) {
+            return title;
+        }
+
+        String category = valueOrFallback(job.category);
+        String date = valueOrFallback(job.date);
+
+        if (!category.equals("Not provided") && !date.equals("Not provided")) {
+            return category + " - " + date;
+        }
+
+        if (!category.equals("Not provided")) {
+            return category;
+        }
+
+        return "Untitled Job";
+    }
+
     private static String valueOrFallback(String value) {
         if (value == null || value.trim().isEmpty()) {
             return "Not provided";

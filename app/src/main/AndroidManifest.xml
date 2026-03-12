@@ -40,6 +40,9 @@
             android:name=".ui.ForgotPasswordActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.JobDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
@@ -53,6 +56,7 @@
         <activity android:name=".ui.EmployeeDashboardActivity" />
         <activity android:name=".ui.EmployerDashboardActivity" />
         <activity android:name=".ui.PostJobActivity" />
+        <activity android:name=".ui.JobSubmissionActivity" />
     </application>
 
 </manifest>

@@ -98,4 +98,28 @@ public class JobDetailsFormatterTest {
         assertTrue(result.contains("Category: Child Care"));
         assertTrue(result.contains("Category: Pet Care"));
     }
+
+    @Test
+    public void dashboardTitle_usesTitleWhenPresent() {
+        Job job = new Job();
+        job.title = "Dog Walker";
+        job.category = "Pet Care";
+        job.date = "2026-03-16";
+
+        String result = JobDetailsFormatter.dashboardTitle(job);
+
+        assertEquals("Dog Walker", result);
+    }
+
+    @Test
+    public void dashboardTitle_fallsBackToCategoryAndDate() {
+        Job job = new Job();
+        job.title = "";
+        job.category = "Child Care";
+        job.date = "2026-03-15";
+
+        String result = JobDetailsFormatter.dashboardTitle(job);
+
+        assertEquals("Child Care - 2026-03-15", result);
+    }
 }
