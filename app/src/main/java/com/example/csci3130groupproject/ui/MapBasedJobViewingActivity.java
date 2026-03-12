@@ -90,8 +90,7 @@ public class MapBasedJobViewingActivity extends FragmentActivity implements OnMa
                     Address address = addresses.get(0);
                     LatLng jobLatLng = new LatLng(address.getLatitude(), address.getLongitude());
 
-                    String title = (job.title != null && !job.title.isEmpty()) ? job.title : "Job";
-                    String snippet = job.locationAddress;
+                    String title = (job.category != null && !job.category.isEmpty()) ? job.category : "Job";                    String snippet = job.locationAddress;
 
                     mMap.addMarker(new MarkerOptions()
                             .position(jobLatLng)
