@@ -26,6 +26,8 @@ import java.util.Locale;
 import android.content.Intent;
 import com.google.android.gms.maps.model.Marker;
 
+import android.widget.Button;
+
 public class MapBasedJobViewingActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -38,6 +40,12 @@ public class MapBasedJobViewingActivity extends FragmentActivity implements OnMa
 
         binding = ActivityMapBasedJobViewingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        Button btnBack = findViewById(R.id.btnBackToDashboard);
+
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
 
         crud = new FirebaseCRUD();
 
