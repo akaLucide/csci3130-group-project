@@ -61,7 +61,8 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         });
 
         btnSearch.setOnClickListener(v -> {
-            // placeholder for search
+            Intent searchIntent = new Intent(EmployeeDashboardActivity.this, JobSearchPageActivity.class);
+            startActivity(searchIntent);
         });
 
         loadAllJobs();
