@@ -17,4 +17,14 @@ public class AddressValidatorTest {
     public void nullAddress_returnsFalse() {
         assertFalse(AddressValidator.isValidAddress(null));
     }
+
+    @Test
+    public void whitespaceAddress_returnsFalse() {
+        assertFalse(AddressValidator.isValidAddress("   "));
+    }
+
+    @Test
+    public void validAddress_returnsTrue() {
+        assertTrue(AddressValidator.isValidAddress("6225 University Ave, Halifax, NS"));
+    }
 }
