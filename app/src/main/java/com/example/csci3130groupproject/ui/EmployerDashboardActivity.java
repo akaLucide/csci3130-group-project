@@ -1,5 +1,6 @@
 package com.example.csci3130groupproject.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -154,6 +155,8 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         Button btnApplicants = new Button(this);
         btnApplicants.setText("Applicants");
+        // set description to grab label for tests
+        btnApplicants.setContentDescription(jobTitle + "-applicants");
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 0,
@@ -186,7 +189,10 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
 
         btnApplicants.setOnClickListener(v -> {
-            // placeholder
+            // open application review
+            Intent intent = new Intent(EmployerDashboardActivity.this, ApplicationReviewActivity.class);
+            intent.putExtra("jobRef", jobRef);
+            startActivity(intent);
         });
 
         buttonRow.addView(btnDetails);
