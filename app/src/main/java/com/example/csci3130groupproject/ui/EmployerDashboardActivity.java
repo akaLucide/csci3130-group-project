@@ -97,6 +97,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                         }
 
                         for (DataSnapshot jobSnap : snapshot.getChildren()) {
+                            String title = jobSnap.child("title").getValue(String.class);
                             String category = jobSnap.child("category").getValue(String.class);
                             String date = jobSnap.child("date").getValue(String.class);
 
@@ -106,8 +107,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                             if (date == null || date.trim().isEmpty()) {
                                 date = "No Date";
                             }
-                            String title = category + " - " + date;
-                            addJobRow(title, jobSnap.getKey()); // add ref for job in db
+                            addJobRow(title, category, date, jobSnap.getKey());
                         }
                     }
 
@@ -120,15 +120,25 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                 });
     }
 
-    private void addJobRow(String jobTitle, String jobRef) {
+    private void addJobRow(String title, String category, String date, String jobRef) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
 
+        // Line 1: Job title
+        String titleText = (title != null && !title.trim().isEmpty())
+                ? title : "(No Title)";
         TextView tvJobTitle = new TextView(this);
-        tvJobTitle.setText(jobTitle);
+        tvJobTitle.setText(titleText);
         tvJobTitle.setTextSize(18f);
-        tvJobTitle.setPadding(0, 0, 0, 8);
+        tvJobTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        // Line 2: Category - Date
+        TextView tvJobSubtitle = new TextView(this);
+        tvJobSubtitle.setText(category + " - " + date);
+        tvJobSubtitle.setTextSize(14f);
+        tvJobSubtitle.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        tvJobSubtitle.setPadding(0, 0, 0, 8);
 
         LinearLayout buttonRow = new LinearLayout(this);
         buttonRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -139,7 +149,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         Button btnApplicants = new Button(this);
         btnApplicants.setText("Applicants");
         // set description to grab label for tests
-        btnApplicants.setContentDescription(jobTitle + "-applicants");
+        btnApplicants.setContentDescription(titleText + "-applicants");
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 0,
@@ -180,6 +190,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         divider.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
 
         jobContainer.addView(tvJobTitle);
+        jobContainer.addView(tvJobSubtitle);
         jobContainer.addView(buttonRow);
         jobContainer.addView(divider);
 

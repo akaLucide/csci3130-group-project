@@ -140,10 +140,24 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
 
+        // Line 1: Job title
+        String titleText = (job.title != null && !job.title.trim().isEmpty())
+                ? job.title : "(No Title)";
         TextView tvJobTitle = new TextView(this);
-        tvJobTitle.setText(JobDetailsFormatter.dashboardTitle(job));
+        tvJobTitle.setText(titleText);
         tvJobTitle.setTextSize(18f);
-        tvJobTitle.setPadding(0, 0, 0, 8);
+        tvJobTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        // Line 2: Category - Date
+        String category = (job.category != null && !job.category.trim().isEmpty())
+                ? job.category : "No Category";
+        String date = (job.date != null && !job.date.trim().isEmpty())
+                ? job.date : "No Date";
+        TextView tvJobSubtitle = new TextView(this);
+        tvJobSubtitle.setText(category + " - " + date);
+        tvJobSubtitle.setTextSize(14f);
+        tvJobSubtitle.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        tvJobSubtitle.setPadding(0, 0, 0, 8);
 
         LinearLayout buttonRow = new LinearLayout(this);
         buttonRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -202,6 +216,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         divider.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
 
         jobContainer.addView(tvJobTitle);
+        jobContainer.addView(tvJobSubtitle);
         jobContainer.addView(buttonRow);
         jobContainer.addView(divider);
 
