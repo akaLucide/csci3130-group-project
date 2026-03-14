@@ -101,6 +101,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                 for (DataSnapshot jobSnap : snapshot.getChildren()) {
                     String jobId = jobSnap.getKey();
 
+                    // Create a Job object and load all fields from Firebase
                     Job job = new Job();
                     job.title = jobSnap.child("title").getValue(String.class);
                     job.category = jobSnap.child("category").getValue(String.class);
@@ -122,6 +123,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                         job.date = "No Date";
                     }
 
+                    // Send full job object to UI row
                     addJobRow(jobId, job);
                 }
             }
@@ -135,12 +137,14 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         });
     }
 
+    // Updated method to accept full job object
     private void addJobRow(String jobId, Job job) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
 
         TextView tvJobTitle = new TextView(this);
+        // Format job title using helper formatter
         tvJobTitle.setText(JobDetailsFormatter.dashboardTitle(job));
         tvJobTitle.setTextSize(18f);
         tvJobTitle.setPadding(0, 0, 0, 8);
@@ -170,6 +174,8 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         btnApply.setLayoutParams(buttonParams2);
 
         btnDetails.setOnClickListener(v -> {
+            //Job Details button
+            //open job details page and send full job info
             Intent intent = new Intent(EmployeeDashboardActivity.this, JobDetailsActivity.class);
             intent.putExtra("title", job.title);
             intent.putExtra("category", job.category);
