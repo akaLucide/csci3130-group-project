@@ -121,8 +121,9 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                                 job.date = "No Date";
                             }
 
+                            String jobRef = jobSnap.getKey();
                             // Pass full Job object to the row
-                            addJobRow(job);
+                            addJobRow(job, jobRef);
                         }
                     }
 
@@ -136,7 +137,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
     }
 
     // Method now accepts Job instead of only job title
-    private void addJobRow(Job job) {
+    private void addJobRow(Job job, String jobRef) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
@@ -156,7 +157,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         Button btnApplicants = new Button(this);
         btnApplicants.setText("Applicants");
         // set description to grab label for tests
-        btnApplicants.setContentDescription(jobTitle + "-applicants");
+        btnApplicants.setContentDescription(job.title + "-applicants");
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 0,
