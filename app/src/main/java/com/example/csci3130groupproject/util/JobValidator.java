@@ -12,4 +12,11 @@ public class JobValidator {
 
         return "OK";
     }
+
+    public static String validateCategory(String category) {
+        if (category == null || category.trim().isEmpty()) {
+            return "Category required";
+        }
+        return "OK";
+    }
 }

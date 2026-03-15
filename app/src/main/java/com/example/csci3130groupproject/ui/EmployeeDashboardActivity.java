@@ -65,7 +65,8 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         });
 
         btnMapView.setOnClickListener(v -> {
-            // placeholder for map view
+            Intent intent = new Intent(EmployeeDashboardActivity.this, MapBasedJobViewingActivity.class);
+            startActivity(intent);
         });
 
         btnSearch.setOnClickListener(v -> {
