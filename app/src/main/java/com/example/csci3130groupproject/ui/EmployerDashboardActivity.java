@@ -13,7 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.csci3130groupproject.R;
+import com.example.csci3130groupproject.core.Job;
 import com.example.csci3130groupproject.core.LogoutHelper;
+import com.example.csci3130groupproject.util.JobDetailsFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -97,17 +99,30 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                         }
 
                         for (DataSnapshot jobSnap : snapshot.getChildren()) {
-                            String title = jobSnap.child("title").getValue(String.class);
-                            String category = jobSnap.child("category").getValue(String.class);
-                            String date = jobSnap.child("date").getValue(String.class);
+                            // Load full job data instead of only category and date
+                            Job job = new Job();
+                            job.title = jobSnap.child("title").getValue(String.class);
+                            job.category = jobSnap.child("category").getValue(String.class);
+                            job.description = jobSnap.child("description").getValue(String.class);
+                            job.locationAddress = jobSnap.child("locationAddress").getValue(String.class);
+                            job.urgency = jobSnap.child("urgency").getValue(String.class);
+                            job.date = jobSnap.child("date").getValue(String.class);
 
-                            if (category == null || category.trim().isEmpty()) {
-                                category = "Untitled Job";
+                            Double salary = jobSnap.child("salaryPerHour").getValue(Double.class);
+                            job.salaryPerHour = salary != null ? salary : 0.0;
+
+                            Double duration = jobSnap.child("expectedDurationHours").getValue(Double.class);
+                            job.expectedDurationHours = duration != null ? duration : 0.0;
+
+                            if (job.category == null || job.category.trim().isEmpty()) {
+                                job.category = "Untitled Job";
                             }
-                            if (date == null || date.trim().isEmpty()) {
-                                date = "No Date";
+                            if (job.date == null || job.date.trim().isEmpty()) {
+                                job.date = "No Date";
                             }
-                            addJobRow(title, category, date, jobSnap.getKey());
+                            String jobRef = jobSnap.getKey();
+                            // Pass full Job object to the row
+                            addJobRow(job, jobRef);
                         }
                     }
 
@@ -120,16 +135,17 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                 });
     }
 
-    private void addJobRow(String title, String category, String date, String jobRef) {
+
+    // Method now accepts Job instead of only job title
+    private void addJobRow(Job job, String jobRef) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
 
         // Line 1: Job title
-        String titleText = (title != null && !title.trim().isEmpty())
-                ? title : "(No Title)";
+        // Use formatter for dashboard title
         TextView tvJobTitle = new TextView(this);
-        tvJobTitle.setText(titleText);
+        tvJobTitle.setText(JobDetailsFormatter.dashboardTitle(job));
         tvJobTitle.setTextSize(18f);
         tvJobTitle.setTypeface(null, android.graphics.Typeface.BOLD);
 
@@ -149,7 +165,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         Button btnApplicants = new Button(this);
         btnApplicants.setText("Applicants");
         // set description to grab label for tests
-        btnApplicants.setContentDescription(titleText + "-applicants");
+    btnApplicants.setContentDescription(job.title + "-applicants");
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 0,
@@ -166,8 +182,19 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                 1f
         );
         btnApplicants.setLayoutParams(buttonParams2);
+
         btnDetails.setOnClickListener(v -> {
-            // placeholder
+            //open job details page and send full job info
+            Intent intent = new Intent(EmployerDashboardActivity.this, JobDetailsActivity.class);
+            intent.putExtra("title", job.title);
+            intent.putExtra("category", job.category);
+            intent.putExtra("description", job.description);
+            intent.putExtra("locationAddress", job.locationAddress);
+            intent.putExtra("salaryPerHour", job.salaryPerHour);
+            intent.putExtra("expectedDurationHours", job.expectedDurationHours);
+            intent.putExtra("urgency", job.urgency);
+            intent.putExtra("date", job.date);
+            startActivity(intent);
         });
 
         btnApplicants.setOnClickListener(v -> {

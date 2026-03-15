@@ -141,11 +141,7 @@ public class PostJobActivity extends AppCompatActivity {
             return;
         }
 
-        double salaryPerHour = 0.0;
-        try { salaryPerHour = Double.parseDouble(salary); } catch (NumberFormatException ignored) {}
-        double expectedDurationHours = 0.0;
-        try { expectedDurationHours = Double.parseDouble(durationHours); } catch (NumberFormatException ignored) {}
-
+    //Bug fix for duration and salary not populating in postings
         java.util.Map<String, Object> job = new java.util.HashMap<>();
         job.put("title", title);
         job.put("category", category);
@@ -153,8 +149,13 @@ public class PostJobActivity extends AppCompatActivity {
         job.put("date", date);
         job.put("description", desc);
         job.put("locationAddress", locationAddress);
-        job.put("expectedDurationHours", expectedDurationHours);
-        job.put("salaryPerHour", salaryPerHour);
+<<<<<<< HEAD
+        job.put("expectedDurationHours", Double.parseDouble(durationHours));
+        job.put("salaryPerHour", Double.parseDouble(salary));
+=======
+        job.put("expectedDurationHours", Double.parseDouble(durationHours));
+        job.put("salaryPerHour", Double.parseDouble(salary));
+>>>>>>> origin/main
         job.put("employerId", uid);
         job.put("createdAt", System.currentTimeMillis());
 

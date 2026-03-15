@@ -126,6 +126,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                 for (DataSnapshot jobSnap : snapshot.getChildren()) {
                     String jobId = jobSnap.getKey();
 
+                    // Create a Job object and load all fields from Firebase
                     Job job = new Job();
                     job.title = jobSnap.child("title").getValue(String.class);
                     job.category = jobSnap.child("category").getValue(String.class);
@@ -147,11 +148,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                         job.date = "No Date";
                     }
 
-                    // Apply filter if one is active
-                    if (activeFilter != null && !matcher.matches(job, activeFilter)) {
-                        continue;
-                    }
-
+                    // Send full job object to UI row
                     addJobRow(jobId, job);
                     count++;
                 }
@@ -179,6 +176,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         });
     }
 
+    // Updated method to accept full job object
     private void addJobRow(String jobId, Job job) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
@@ -188,7 +186,8 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         String titleText = (job.title != null && !job.title.trim().isEmpty())
                 ? job.title : "(No Title)";
         TextView tvJobTitle = new TextView(this);
-        tvJobTitle.setText(titleText);
+        // Format job title using helper formatter
+        tvJobTitle.setText(JobDetailsFormatter.dashboardTitle(job));
         tvJobTitle.setTextSize(18f);
         tvJobTitle.setTypeface(null, android.graphics.Typeface.BOLD);
 
@@ -227,10 +226,21 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         );
         btnApply.setLayoutParams(buttonParams2);
 
+        //Job Details button
         btnDetails.setOnClickListener(v -> {
-            // placeholder for job details page
+            Intent intent = new Intent(EmployeeDashboardActivity.this, JobDetailsActivity.class);
+            intent.putExtra("title", job.title);
+            intent.putExtra("category", job.category);
+            intent.putExtra("description", job.description);
+            intent.putExtra("locationAddress", job.locationAddress);
+            intent.putExtra("salaryPerHour", job.salaryPerHour);
+            intent.putExtra("expectedDurationHours", job.expectedDurationHours);
+            intent.putExtra("urgency", job.urgency);
+            intent.putExtra("date", job.date);
+            startActivity(intent);
         });
 
+        // Application Review button
         btnApply.setOnClickListener(v -> {
             Intent intent = new Intent(EmployeeDashboardActivity.this, JobSubmissionActivity.class);
             intent.putExtra("jobId", jobId);
