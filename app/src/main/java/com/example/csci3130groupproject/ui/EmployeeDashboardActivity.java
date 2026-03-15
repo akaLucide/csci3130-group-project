@@ -260,7 +260,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                     Toast.makeText(EmployeeDashboardActivity.this,
                             "You have already applied to this job.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent(EmployeeDashboardActivity.this, JobSubmissionActivity.class);
+                    Intent intent = new Intent(EmployeeDashboardActivity.this, ApplicationSubmissionActivity.class);
                     intent.putExtra("jobId", jobId);
                     intent.putExtra("jobTitle", JobDetailsFormatter.dashboardTitle(job));
                     startActivity(intent);
