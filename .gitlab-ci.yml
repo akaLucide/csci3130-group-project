@@ -1,0 +1,18 @@
+# Try simplified version of pipeline that just runs the tests
+
+image: ghcr.io/cirruslabs/android-sdk:33
+
+stages:
+  - test
+
+unit_tests:
+  stage: test
+  script:
+    - chmod +x gradlew
+    - ./gradlew testDebugUnitTest --info
+  artifacts:
+    when: always
+    reports:
+      junit: app/build/test-results/**/*.xml
+    paths:
+      - app/build/reports/tests/

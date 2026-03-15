@@ -14,5 +14,6 @@
         <item>Medium</item>
         <item>High</item>
     </string-array>
+    <string name="title_activity_map_based_job_viewing">MapBasedJobViewingActivity</string>
 
 </resources>

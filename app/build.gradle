@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 def localProps = new Properties()
@@ -32,6 +33,7 @@ android {
 
     buildFeatures {
         buildConfig true
+        viewBinding true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -55,8 +57,12 @@ dependencies {
     implementation libs.googleid
     implementation libs.uiautomator
     implementation libs.espresso.intents
+    implementation libs.play.services.maps
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
     testImplementation libs.robolectric
+
+    //google maps
+    implementation libs.play.services.maps
 }
