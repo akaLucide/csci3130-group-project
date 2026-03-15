@@ -15,4 +15,4 @@ unit_tests:
   artifacts:
     when: always
     reports:
-      junit: app/build/test-results/testDebugUnitTest/*.xml
+      junit: app/build/test-results/**/*.xml
