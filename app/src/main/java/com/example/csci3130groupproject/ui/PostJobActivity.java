@@ -25,7 +25,7 @@ public class PostJobActivity extends AppCompatActivity {
     private Button btnPickDate, btnPostJob, btnBackToDashboard;
     private TextView tvSelectedDate;
     private int selectedYear, selectedMonth, selectedDay;
-    private EditText etJobDescription, etJobLocation, etDurationHours, etSalary;
+    private EditText etJobTitle, etJobDescription, etJobLocation, etDurationHours, etSalary;
     private DatabaseReference jobsRef;
     private FirebaseAuth auth;
     private FirebaseCRUD crud;
@@ -40,6 +40,7 @@ public class PostJobActivity extends AppCompatActivity {
         jobsRef = FirebaseDatabase.getInstance().getReference("jobs");
         crud = new FirebaseCRUD();
 
+        etJobTitle = findViewById(R.id.etJobTitle);
         spJobCategory = findViewById(R.id.spJobCategory);
         spUrgency = findViewById(R.id.spUrgency);
         btnPickDate = findViewById(R.id.btnPickDate);
@@ -98,6 +99,7 @@ public class PostJobActivity extends AppCompatActivity {
     private void postJob() {
         android.widget.Toast.makeText(this, "Post Job clicked", android.widget.Toast.LENGTH_SHORT).show();
 
+        String title    = etJobTitle.getText() != null ? etJobTitle.getText().toString().trim() : "";
         String category = spJobCategory.getSelectedItem() != null ? spJobCategory.getSelectedItem().toString() : "";
         String urgency  = spUrgency.getSelectedItem() != null ? spUrgency.getSelectedItem().toString() : "";
         String date     = tvSelectedDate.getText() != null ? tvSelectedDate.getText().toString() : "";
@@ -141,6 +143,7 @@ public class PostJobActivity extends AppCompatActivity {
 
         //Bug fix for duration and salary not populating in postings
         java.util.Map<String, Object> job = new java.util.HashMap<>();
+        job.put("title", title);
         job.put("category", category);
         job.put("urgency", urgency);
         job.put("date", date);
@@ -160,6 +163,7 @@ public class PostJobActivity extends AppCompatActivity {
         jobsRef.child(key).setValue(job)
                 .addOnSuccessListener(unused -> {
                     android.widget.Toast.makeText(this, "Job posted!", android.widget.Toast.LENGTH_SHORT).show();
+                    etJobTitle.setText("");
                     etJobDescription.setText("");
                     etJobLocation.setText("");
                     etDurationHours.setText("");

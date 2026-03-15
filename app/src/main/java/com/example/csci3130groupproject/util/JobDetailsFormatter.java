@@ -4,11 +4,13 @@ import com.example.csci3130groupproject.core.Job;
 
 import java.util.List;
 
+// Utility class for formatting Job data into display-ready strings
 public final class JobDetailsFormatter {
 
     private JobDetailsFormatter() {
     }
 
+    // Formats all fields of a Job into a multi-line detail string
     public static String format(Job job) {
         if (job == null) {
             return "Title: Not provided"
@@ -60,6 +62,7 @@ public final class JobDetailsFormatter {
         return sb.toString();
     }
 
+    // Returns a display title for the dashboard row, falling back to category or "Untitled Job"
     public static String dashboardTitle(Job job) {
         if (job == null) {
             return "Untitled Job";
@@ -84,6 +87,7 @@ public final class JobDetailsFormatter {
         return "Untitled Job";
     }
 
+    // Returns trimmed value or "Not provided" if null/blank
     private static String valueOrFallback(String value) {
         if (value == null || value.trim().isEmpty()) {
             return "Not provided";

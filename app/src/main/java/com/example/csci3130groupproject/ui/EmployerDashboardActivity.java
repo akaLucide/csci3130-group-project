@@ -120,7 +120,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                             if (job.date == null || job.date.trim().isEmpty()) {
                                 job.date = "No Date";
                             }
-
                             String jobRef = jobSnap.getKey();
                             // Pass full Job object to the row
                             addJobRow(job, jobRef);
@@ -136,17 +135,26 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                 });
     }
 
+
     // Method now accepts Job instead of only job title
     private void addJobRow(Job job, String jobRef) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
 
-        TextView tvJobTitle = new TextView(this);
+        // Line 1: Job title
         // Use formatter for dashboard title
+        TextView tvJobTitle = new TextView(this);
         tvJobTitle.setText(JobDetailsFormatter.dashboardTitle(job));
         tvJobTitle.setTextSize(18f);
-        tvJobTitle.setPadding(0, 0, 0, 8);
+        tvJobTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        // Line 2: Category - Date
+        TextView tvJobSubtitle = new TextView(this);
+        tvJobSubtitle.setText((job.category != null ? job.category : "") + " - " + (job.date != null ? job.date : ""));
+        tvJobSubtitle.setTextSize(14f);
+        tvJobSubtitle.setTextColor(getResources().getColor(android.R.color.darker_gray));
+        tvJobSubtitle.setPadding(0, 0, 0, 8);
 
         LinearLayout buttonRow = new LinearLayout(this);
         buttonRow.setOrientation(LinearLayout.HORIZONTAL);
@@ -156,6 +164,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         Button btnApplicants = new Button(this);
         btnApplicants.setText("Applicants");
+        
         // set description to grab label for tests
         btnApplicants.setContentDescription(job.title + "-applicants");
 
@@ -209,6 +218,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         divider.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
 
         jobContainer.addView(tvJobTitle);
+        jobContainer.addView(tvJobSubtitle);
         jobContainer.addView(buttonRow);
         jobContainer.addView(divider);
 
