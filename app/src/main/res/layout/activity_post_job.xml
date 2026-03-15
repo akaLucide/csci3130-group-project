@@ -44,11 +44,12 @@
             android:textStyle="bold"
             android:paddingTop="8dp" />
 
-        <Spinner
-            android:id="@+id/spJobCategory"
+        <EditText
+            android:id="@+id/etJobCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown" />
+            android:hint="Type a category shared by all employers"
+            android:inputType="textCapWords" />
 
         <TextView
             android:layout_width="match_parent"
