@@ -247,10 +247,25 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
 
         // Application Review button
         btnApply.setOnClickListener(v -> {
-            Intent intent = new Intent(EmployeeDashboardActivity.this, JobSubmissionActivity.class);
-            intent.putExtra("jobId", jobId);
-            intent.putExtra("jobTitle", JobDetailsFormatter.dashboardTitle(job));
-            startActivity(intent);
+            // Check if user has already applied before navigating to JobSubmissionActivity
+            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference applicantRef = FirebaseDatabase.getInstance(DB_URL)
+                    .getReference("jobs")
+                    .child(jobId)
+                    .child("applicants")
+                    .child(uid);
+
+            applicantRef.get().addOnSuccessListener(snapshot -> {
+                if (snapshot.exists()) {
+                    Toast.makeText(EmployeeDashboardActivity.this,
+                            "You have already applied to this job.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(EmployeeDashboardActivity.this, JobSubmissionActivity.class);
+                    intent.putExtra("jobId", jobId);
+                    intent.putExtra("jobTitle", JobDetailsFormatter.dashboardTitle(job));
+                    startActivity(intent);
+                }
+            });
         });
 
         buttonRow.addView(btnDetails);
