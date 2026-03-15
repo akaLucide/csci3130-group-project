@@ -1,5 +1,6 @@
 package com.example.csci3130groupproject.core;
 
+// Data model representing a job posting stored in Firebase
 public class Job {
     public String title;
     public String category;
@@ -14,5 +15,6 @@ public class Job {
 
 
 
+    // No-arg constructor required for Firebase deserialization
     public Job() {}
 }

@@ -37,7 +37,9 @@ public class JobDetailsActivity extends AppCompatActivity implements OnMapReadyC
         tvJobDetails = findViewById(R.id.tvJobDetails);
         btnBackToResults = findViewById(R.id.btnBackToResults);
 
+        // Reconstruct Job object from intent extras passed by the dashboard
         job = new Job();
+
         job.title = getIntent().getStringExtra("title");
         job.category = getIntent().getStringExtra("category");
         job.description = getIntent().getStringExtra("description");
@@ -47,6 +49,7 @@ public class JobDetailsActivity extends AppCompatActivity implements OnMapReadyC
         job.urgency = getIntent().getStringExtra("urgency");
         job.date = getIntent().getStringExtra("date");
 
+        // Format and display all job details using the shared formatter
         tvJobDetails.setText(JobDetailsFormatter.format(job));
 
         SupportMapFragment mapFragment =
