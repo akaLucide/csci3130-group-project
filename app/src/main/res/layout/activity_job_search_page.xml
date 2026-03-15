@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:padding="12dp">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Job Search"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:paddingBottom="10dp" />
+
+    <!-- Search fields -->
+    <AutoCompleteTextView
+        android:id="@+id/etJobTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Job title (e.g., Babysitting)"
+        android:inputType="text"
+        android:completionThreshold="2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <EditText
+            android:id="@+id/etMinSalary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Min $/hr"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/etMaxSalary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:hint="Max $/hr"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/etMaxDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Expected duration (max hours)"
+        android:inputType="numberDecimal"
+        android:paddingTop="8dp" />
+
+    <EditText
+        android:id="@+id/etVicinityKm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Vicinity (km) e.g., 5"
+        android:inputType="numberDecimal"
+        android:paddingTop="8dp" />
+
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search Jobs"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/qc_primary_blue_dark"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>

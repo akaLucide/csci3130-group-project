@@ -4,16 +4,20 @@ import android.text.TextUtils;
 
 import java.util.Locale;
 
+// Evaluates whether a job matches all criteria in a search filter
 public class JobMatcher {
+    // Returns true only if the job satisfies every active filter field
     public boolean matches(Job job, JobSearchFilter f) {
         if (job == null || f == null) return false;
 
-        // Title filter: match title OR category
+        // Title filter: match title, category, OR description
         if (!TextUtils.isEmpty(f.titleQuery)) {
             String title = (job.title == null) ? "" : job.title.toLowerCase(Locale.ROOT);
             String category = (job.category == null) ? "" : job.category.toLowerCase(Locale.ROOT);
+            String description = (job.description == null) ? "" : job.description.toLowerCase(Locale.ROOT);
 
-            if (!title.contains(f.titleQuery) && !category.contains(f.titleQuery)) {
+            if (!title.contains(f.titleQuery) && !category.contains(f.titleQuery)
+                    && !description.contains(f.titleQuery)) {
                 return false;
             }
         }
