@@ -151,7 +151,7 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         // Line 2: Category - Date
         TextView tvJobSubtitle = new TextView(this);
-        tvJobSubtitle.setText(category + " - " + date);
+        tvJobSubtitle.setText((job.category != null ? job.category : "") + " - " + (job.date != null ? job.date : ""));
         tvJobSubtitle.setTextSize(14f);
         tvJobSubtitle.setTextColor(getResources().getColor(android.R.color.darker_gray));
         tvJobSubtitle.setPadding(0, 0, 0, 8);
@@ -164,8 +164,9 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         Button btnApplicants = new Button(this);
         btnApplicants.setText("Applicants");
+        
         // set description to grab label for tests
-    btnApplicants.setContentDescription(job.title + "-applicants");
+        btnApplicants.setContentDescription(job.title + "-applicants");
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 0,

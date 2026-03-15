@@ -148,6 +148,11 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                         job.date = "No Date";
                     }
 
+                    // Filter jobs if a filter is active
+                    if (activeFilter != null && !matcher.matches(job, activeFilter)) {
+                        continue;
+                    }
+
                     // Send full job object to UI row
                     addJobRow(jobId, job);
                     count++;
@@ -183,8 +188,6 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         jobContainer.setPadding(0, 0, 0, 24);
 
         // Line 1: Job title
-        String titleText = (job.title != null && !job.title.trim().isEmpty())
-                ? job.title : "(No Title)";
         TextView tvJobTitle = new TextView(this);
         // Format job title using helper formatter
         tvJobTitle.setText(JobDetailsFormatter.dashboardTitle(job));
