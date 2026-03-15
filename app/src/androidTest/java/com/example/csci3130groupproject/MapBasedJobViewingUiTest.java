@@ -14,23 +14,41 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-//UI test class for the Map-Based Job Viewing feature
-//Uses espresso to verify that important UI elements are visible
+/**
+ * UI tests for the Map-Based Job Viewing feature.
+ * These tests verify that important UI components are visible
+ * when the activity launches.
+ */
 @RunWith(AndroidJUnit4.class)
 public class MapBasedJobViewingUiTest {
 
-    //Launches MapBasedJobViewingActivity before each test
+    /**
+     * Launches MapBasedJobViewingActivity before each test.
+     */
     @Rule
     public ActivityScenarioRule<MapBasedJobViewingActivity> activityRule =
             new ActivityScenarioRule<>(MapBasedJobViewingActivity.class);
 
-    //Verifies that the Google Map component is displayed when the map-based job viewing screen opens
+    /**
+     * Acceptance Test: Map Display
+     *
+     * Given I open the map-based job viewing screen,
+     * when the activity loads,
+     * then the Google Map component should be visible.
+     */
     @Test
     public void employeeCanViewJobLocationsOnMap() {
         onView(withId(R.id.map)).check(matches(isDisplayed()));
     }
 
-    //Verifies that the "Back to Dashboard" button exists and is visible on the screen so users can return
+    /**
+     * Acceptance Test: Back Button Visibility
+     *
+     * Given I am on the map-based job viewing screen,
+     * when the page is displayed,
+     * then the "Back to Dashboard" button should be visible
+     * so the user can return to the dashboard.
+     */
     @Test
     public void backToDashboardButtonDisplays() {
         onView(withId(R.id.btnBackToDashboard)).check(matches(isDisplayed()));

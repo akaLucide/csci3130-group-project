@@ -28,14 +28,25 @@ import com.google.android.gms.maps.model.Marker;
 
 import android.widget.Button;
 
-//Activity responsible for displaying available jobs on Google Maps.
-//Each job is converted into a map marker based on its address.
+/**
+ * Activity responsible for displaying available job postings on a Google Map.
+ *
+ * This activity retrieves jobs from Firebase and converts their address
+ * into map coordinates using a Geocoder. Each job is displayed as a marker.
+ * When a marker is clicked, the JobDetailsActivity opens.
+ */
 public class MapBasedJobViewingActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ActivityMapBasedJobViewingBinding binding;
     private FirebaseCRUD crud;
 
+    /**
+     * Initializes the activity, loads the layout, sets up the back button,
+     * and prepares the Google Map fragment.
+     *
+     * @param savedInstanceState saved instance state provided by Android
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,8 +75,12 @@ public class MapBasedJobViewingActivity extends FragmentActivity implements OnMa
         }
     }
 
-    //called when the Google Map is fully initialized and ready to use
-    @Override
+    /**
+     * Called when the Google Map is fully initialized.
+     * Sets up marker click behavior and loads job markers from Firebase.
+     *
+     * @param googleMap the GoogleMap instance that is ready to be used
+     */    @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -100,12 +115,20 @@ public class MapBasedJobViewingActivity extends FragmentActivity implements OnMa
         //retrieve jobs from Firebase database
         crud.searchJobs(filter, new FirebaseCRUD.JobsCallback() {
 
-            //if jobs were successfully retrieved from Firebase, convert them into markers on the map.
-            @Override
+            /**
+             * Called when jobs are successfully retrieved from Firebase.
+             *
+             * @param jobs list of jobs retrieved from the database
+             */            @Override
             public void onSuccess(List<Job> jobs) {
                 addJobMarkers(jobs);
             }
 
+            /**
+             * Called when an error occurs while retrieving jobs.
+             *
+             * @param message error message returned from Firebase
+             */
             @Override
             public void onError(String message) {
                 LatLng halifax = new LatLng(44.6488, -63.5752);
@@ -115,7 +138,12 @@ public class MapBasedJobViewingActivity extends FragmentActivity implements OnMa
         });
     }
 
-    //converts job objects into map markers using their addresses
+    /**
+     * Converts a list of job objects into markers on the map using their
+     * location addresses.
+     *
+     * @param jobs list of jobs retrieved from Firebase
+     */
     private void addJobMarkers(List<Job> jobs) {
 
         //if no jobs exist, show default message marker in Halifax
