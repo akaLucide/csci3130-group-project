@@ -1,6 +1,7 @@
 package com.example.csci3130groupproject;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import android.content.Context;
 import android.content.Intent;
@@ -37,31 +38,34 @@ public class JobApplicationUITest {
         context.startActivity(appIntent);
         device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
 
-        // Navigate to employee dashboard page from login page
-        //UiObject goToLoginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/goToLoginButton"));
-        //if (goToLoginButton.exists()) {
-        //    goToLoginButton.click();
-        //    device.waitForIdle(1000);
-        //}
+        // login as example employee tom
+        UiObject goToLogin = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/goToLoginButton"));
+        goToLogin.clickAndWaitForNewWindow();
+        UiObject email = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/loginEmailEditText"));
+        email.setText("tom@gmail.com");
+        UiObject password = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/loginPasswordEditText"));
+        password.setText("password");
+        UiObject login = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/loginButton"));
+        login.clickAndWaitForNewWindow();
+
+        // Wait for employee dashboard and jobs to fully load from Firebase
+        device.wait(Until.findObject(By.res(launcherPackage, "layoutPostedJobs")), 6000);
+        device.wait(Until.findObject(By.text("Apply")), 8000);
     }
 
     /**
      * Acceptance Test 1: Job Page Navigation
-     * Given I am on the employee dashboard screen,
-     * when I press the job posting button,
-     * then I am taken to the job posting page to view available jobs.
+     * Given I am on the employee dashboard,
+     * when I am authenticated and the firebase loads,
+     * then I should see all recent posted available jobs listed.
      */
     @Test
     public void testJobPageNavigation() throws UiObjectNotFoundException {
-        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
-        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
-        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
-        emailField.clearTextField();
-        passwordField.clearTextField();
-        loginButton.click();
-        device.waitForIdle(1000);
-        assertTrue("Should remain on login page when fields are empty", emailField.exists());
-        assertTrue("Login button should still be visible", loginButton.exists());
+        // Verify jobs list is visible and at least one job with an Apply button is shown
+        UiObject jobsList = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/layoutPostedJobs"));
+        assertTrue("Employee dashboard should show the jobs list", jobsList.exists());
+        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        assertTrue("At least one job with an Apply button should be visible", applyButton.exists());
     }
 
     /**
@@ -72,76 +76,102 @@ public class JobApplicationUITest {
      */
     @Test
     public void testJobDetailsNavigation() throws UiObjectNotFoundException {
-        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
-        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
-        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
-        emailField.setText("invalid@test.com");
-        passwordField.setText("invaliduser");
-        loginButton.click();
-        device.waitForIdle(3000);
-        assertTrue("Should remain on login page with invalid credentials", emailField.exists());
-        assertTrue("Password field should still be visible", passwordField.exists());
-        assertTrue("Login button should still be visible", loginButton.exists());
+        // Click Details on the first job
+        UiObject detailsButton = device.findObject(new UiSelector().text("Details"));
+        assertTrue("A Details button should be visible on the dashboard", detailsButton.exists());
+        detailsButton.click();
+        device.waitForIdle(2000);
+
+        // Verify we navigated away from the dashboard to JobDetailsActivity
+        UiObject jobsList = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/layoutPostedJobs"));
+        assertFalse("Should have navigated away from the dashboard to job details", jobsList.exists());
     }
 
     /**
      * Acceptance Test 3: Job Application Navigation
-     * Given I am on the job details page,
-     * when I select apply,
+     * Given I am on the employee dashboard,
+     * when I select apply to a job,
      * then I am taken to a custom screen to attach cover letter and resume and submit my application.
      */
     @Test
     public void testJobApplicationNavigation() throws UiObjectNotFoundException {
-        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
-        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
-        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
-        emailField.setText("tom@gmail.com");
-        passwordField.setText("password");
-        loginButton.click();
-        device.waitForIdle(4000);
-        UiObject emailFieldAfterLogin = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
-        assertTrue("Should navigate away from login page on successful login", !emailFieldAfterLogin.exists());
+        // Click Apply on a job the user has not yet applied to
+        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        assertTrue("An Apply button should be visible on the dashboard", applyButton.exists());
+        applyButton.click();
+        device.waitForIdle(3000);
+
+        // Verify we landed on JobSubmissionActivity with the resume picker visible
+        UiObject pickResumeButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/btnPickResume"));
+        assertTrue("Should be on the job application screen with a resume upload button", pickResumeButton.exists());
     }
 
     /**
      * Acceptance Test 4: Required Files are Attached
      * Given I am on the application screen,
-     * when I select apply,
-     * then both resume and cover letter are checked to be attached before allowing the application to submit.
+     * when I select apply without attaching a resume,
+     * then the app checks that a resume is attached before allowing the application to submit.
      */
     @Test
     public void testRequiredFilesAttached() throws UiObjectNotFoundException {
-        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
-        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
-        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
-        emailField.setText("tom@gmail.com");
-        passwordField.setText("password");
-        loginButton.click();
-        device.waitForIdle(4000);
-        UiObject searchButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/btnSearch"));
-        assertTrue("Should navigate to Employee Dashboard for employee role", searchButton.exists());
+        // Navigate to JobSubmissionActivity
+        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        applyButton.click();
+        device.waitForIdle(3000);
+
+        // Try to submit without attaching a resume
+        UiObject submitButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/btnSubmit"));
+        assertTrue("Submit button should be visible", submitButton.exists());
+        submitButton.click();
+        device.waitForIdle(1000);
+
+        // Should remain on the submission screen since no resume was attached
+        UiObject pickResumeButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/btnPickResume"));
+        assertTrue("Should remain on the application screen when no resume is attached", pickResumeButton.exists());
     }
 
     /**
      * Acceptance Test 5: No Crash on Errors
      * Given the application fails (missing attachments),
      * when the app handles it,
-     * then the app does not crash and shows a readable message
+     * then the app does not crash and shows a readable message.
      */
     @Test
     public void testSubmissionFailure_DoesNotCrash() throws UiObjectNotFoundException {
-        UiObject emailField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginEmailEditText"));
-        UiObject passwordField = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginPasswordEditText"));
-        UiObject loginButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/loginButton"));
-        emailField.setText("invalid@test.com");
-        passwordField.setText("invalidpassword");
-        loginButton.click();
+        // Navigate to JobSubmissionActivity
+        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        applyButton.click();
         device.waitForIdle(3000);
-        assertTrue("App should not crash - login page should still be visible", emailField.exists());
-        assertTrue("App should not crash - login button should still be clickable", loginButton.exists());
-        assertTrue("App should not crash - password field should still be visible", passwordField.exists());
-        loginButton.click();
+
+        // Attempt to submit with no resume attached multiple times
+        UiObject submitButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/btnSubmit"));
+        submitButton.click();
         device.waitForIdle(1000);
-        assertTrue("App should remain responsive after error", loginButton.exists());
+        submitButton.click();
+        device.waitForIdle(1000);
+
+        // App should not crash — submission screen should still be fully visible
+        UiObject pickResumeButton = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/btnPickResume"));
+        assertTrue("App should not crash - resume picker should still be visible", pickResumeButton.exists());
+        assertTrue("App should not crash - submit button should still be visible", submitButton.exists());
+    }
+
+    /**
+     * Acceptance Test 6: Job Application Duplicates
+     * Given I am on the employee dashboard,
+     * when I select apply to a job I have already submitted an application for,
+     * then I remain on the dashboard and am given a toast notification saying I have already applied for this job.
+     */
+    @Test
+    public void testDuplicateApplicationBlocked() throws UiObjectNotFoundException {
+        // Click Apply on the already-applied job (tom@gmail.com must have already applied to the first job)
+        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        assertTrue("An Apply button should be visible on the dashboard", applyButton.exists());
+        applyButton.click();
+        device.waitForIdle(3000);
+
+        // Should remain on the dashboard — JobSubmissionActivity should NOT have opened
+        UiObject jobsList = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/layoutPostedJobs"));
+        assertTrue("Should remain on dashboard when already applied", jobsList.exists());
     }
 }
