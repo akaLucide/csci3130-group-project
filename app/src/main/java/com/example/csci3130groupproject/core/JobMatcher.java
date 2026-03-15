@@ -4,7 +4,9 @@ import android.text.TextUtils;
 
 import java.util.Locale;
 
+// Evaluates whether a job matches all criteria in a search filter
 public class JobMatcher {
+    // Returns true only if the job satisfies every active filter field
     public boolean matches(Job job, JobSearchFilter f) {
         if (job == null || f == null) return false;
 

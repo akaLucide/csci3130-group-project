@@ -43,6 +43,7 @@ public class JobSearchPageActivity extends AppCompatActivity {
         btnSearch.setOnClickListener(v -> onSearchClicked());
     }
 
+    // Collects filter values from the form and returns them to the calling activity
     private void onSearchClicked() {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("titleQuery", etJobTitle.getText().toString().trim().toLowerCase(Locale.ROOT));
@@ -54,6 +55,7 @@ public class JobSearchPageActivity extends AppCompatActivity {
         finish();
     }
 
+    // Safely parses a string to double, returning a default if empty or invalid
     private double parseDouble(String s, double def) {
         if (TextUtils.isEmpty(s)) return def;
         try { return Double.parseDouble(s); }

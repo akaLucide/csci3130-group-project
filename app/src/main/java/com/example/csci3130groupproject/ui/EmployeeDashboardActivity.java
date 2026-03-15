@@ -82,6 +82,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         loadJobs();
     }
 
+    // Receives search filter results from JobSearchPageActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -96,6 +97,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         }
     }
 
+    // Fetches all jobs from Firebase and applies the active filter if one exists
     private void loadJobs() {
         layoutPostedJobs.removeAllViews();
 
