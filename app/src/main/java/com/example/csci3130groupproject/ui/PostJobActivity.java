@@ -7,29 +7,34 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.csci3130groupproject.R;
 import com.example.csci3130groupproject.data.FirebaseCRUD;
+import com.example.csci3130groupproject.util.JobCategoryUtil;
 import com.example.csci3130groupproject.util.JobValidator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PostJobActivity extends AppCompatActivity {
 
-    private Spinner spJobCategory, spUrgency;
+    private Spinner spUrgency;
     private Button btnPickDate, btnPostJob, btnBackToDashboard;
     private TextView tvSelectedDate;
     private int selectedYear, selectedMonth, selectedDay;
-    private EditText etJobTitle, etJobDescription, etJobLocation, etDurationHours, etSalary;
+    private EditText etJobTitle, etJobCategory, etJobDescription, etJobLocation, etDurationHours, etSalary;
     private DatabaseReference jobsRef;
+    private DatabaseReference categoriesRef;
     private FirebaseAuth auth;
     private FirebaseCRUD crud;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +43,11 @@ public class PostJobActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         jobsRef = FirebaseDatabase.getInstance().getReference("jobs");
+        categoriesRef = FirebaseDatabase.getInstance().getReference("jobCategories");
         crud = new FirebaseCRUD();
 
         etJobTitle = findViewById(R.id.etJobTitle);
-        spJobCategory = findViewById(R.id.spJobCategory);
+        etJobCategory = findViewById(R.id.etJobCategory);
         spUrgency = findViewById(R.id.spUrgency);
         btnPickDate = findViewById(R.id.btnPickDate);
         tvSelectedDate = findViewById(R.id.tvSelectedDate);
@@ -54,14 +60,6 @@ public class PostJobActivity extends AppCompatActivity {
 
         btnPostJob.setOnClickListener(v -> postJob());
         btnBackToDashboard.setOnClickListener(v -> finish());
-
-        ArrayAdapter<CharSequence> catAdapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.job_categories,
-                android.R.layout.simple_spinner_item
-        );
-        catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spJobCategory.setAdapter(catAdapter);
 
         ArrayAdapter<CharSequence> urgAdapter = ArrayAdapter.createFromResource(
                 this,
@@ -97,54 +95,103 @@ public class PostJobActivity extends AppCompatActivity {
     }
 
     private void postJob() {
-        android.widget.Toast.makeText(this, "Post Job clicked", android.widget.Toast.LENGTH_SHORT).show();
-
-        String title    = etJobTitle.getText() != null ? etJobTitle.getText().toString().trim() : "";
-        String category = spJobCategory.getSelectedItem() != null ? spJobCategory.getSelectedItem().toString() : "";
-        String urgency  = spUrgency.getSelectedItem() != null ? spUrgency.getSelectedItem().toString() : "";
-        String date     = tvSelectedDate.getText() != null ? tvSelectedDate.getText().toString() : "";
-        String desc     = etJobDescription.getText() != null ? etJobDescription.getText().toString().trim() : "";
+        String title = etJobTitle.getText() != null ? etJobTitle.getText().toString().trim() : "";
+        String typedCategory = etJobCategory.getText() != null ? etJobCategory.getText().toString().trim() : "";
+        String urgency = spUrgency.getSelectedItem() != null ? spUrgency.getSelectedItem().toString() : "";
+        String date = tvSelectedDate.getText() != null ? tvSelectedDate.getText().toString() : "";
+        String desc = etJobDescription.getText() != null ? etJobDescription.getText().toString().trim() : "";
         String locationAddress = etJobLocation.getText() != null ? etJobLocation.getText().toString().trim() : "";
         String durationHours = etDurationHours.getText() != null ? etDurationHours.getText().toString().trim() : "";
         String salary = etSalary.getText() != null ? etSalary.getText().toString().trim() : "";
+
+        String categoryValidation = JobValidator.validateCategory(typedCategory);
+        if (!categoryValidation.equals("OK")) {
+            etJobCategory.setError(categoryValidation);
+            Toast.makeText(this, categoryValidation, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         String validationResult = JobValidator.validate(desc, date);
         if (!validationResult.equals("OK")) {
             if (validationResult.equals("Description required")) {
                 etJobDescription.setError(validationResult);
             }
-            android.widget.Toast.makeText(this, validationResult, android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, validationResult, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (locationAddress.isEmpty()) {
             etJobLocation.setError("Location address required");
-            android.widget.Toast.makeText(this, "Location address required", android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Location address required", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (durationHours.isEmpty()) {
             etDurationHours.setError("Duration required");
-            android.widget.Toast.makeText(this, "Duration required", android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Duration required", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (salary.isEmpty()) {
             etSalary.setError("Salary required");
-            android.widget.Toast.makeText(this, "Salary required", android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Salary required", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String uid = (auth.getCurrentUser() != null) ? auth.getCurrentUser().getUid() : null;
         if (uid == null) {
-            android.widget.Toast.makeText(this, "Not logged in. Please login again.", android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Not logged in. Please login again.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        //Bug fix for duration and salary not populating in postings
-        java.util.Map<String, Object> job = new java.util.HashMap<>();
+        String normalizedCategory = JobCategoryUtil.normalizeKey(typedCategory);
+
+        categoriesRef.child(normalizedCategory).get()
+                .addOnSuccessListener(snapshot -> saveJobWithResolvedCategory(
+                        snapshot,
+                        typedCategory,
+                        title,
+                        urgency,
+                        date,
+                        desc,
+                        locationAddress,
+                        durationHours,
+                        salary,
+                        uid,
+                        normalizedCategory
+                ))
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to check category: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
+    }
+
+    private void saveJobWithResolvedCategory(
+            DataSnapshot snapshot,
+            String typedCategory,
+            String title,
+            String urgency,
+            String date,
+            String desc,
+            String locationAddress,
+            String durationHours,
+            String salary,
+            String uid,
+            String normalizedCategory
+    ) {
+        String storedCategory = snapshot.child("name").getValue(String.class);
+        String resolvedCategory = JobCategoryUtil.resolveStoredOrNewDisplayName(storedCategory, typedCategory);
+
+        if (!snapshot.exists()) {
+            Map<String, Object> categoryMap = new HashMap<>();
+            categoryMap.put("name", resolvedCategory);
+            categoryMap.put("normalizedKey", normalizedCategory);
+            categoryMap.put("createdAt", System.currentTimeMillis());
+            categoriesRef.child(normalizedCategory).setValue(categoryMap);
+        }
+
+        Map<String, Object> job = new HashMap<>();
         job.put("title", title);
-        job.put("category", category);
+        job.put("category", resolvedCategory);
         job.put("urgency", urgency);
         job.put("date", date);
         job.put("description", desc);
@@ -156,14 +203,15 @@ public class PostJobActivity extends AppCompatActivity {
 
         String key = jobsRef.push().getKey();
         if (key == null) {
-            android.widget.Toast.makeText(this, "Failed to generate job id", android.widget.Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed to generate job id", Toast.LENGTH_SHORT).show();
             return;
         }
 
         jobsRef.child(key).setValue(job)
                 .addOnSuccessListener(unused -> {
-                    android.widget.Toast.makeText(this, "Job posted!", android.widget.Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Job posted!", Toast.LENGTH_SHORT).show();
                     etJobTitle.setText("");
+                    etJobCategory.setText("");
                     etJobDescription.setText("");
                     etJobLocation.setText("");
                     etDurationHours.setText("");
@@ -172,7 +220,7 @@ public class PostJobActivity extends AppCompatActivity {
                     finish();
                 })
                 .addOnFailureListener(e ->
-                        android.widget.Toast.makeText(this, "Post failed: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Post failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
                 );
     }
 }

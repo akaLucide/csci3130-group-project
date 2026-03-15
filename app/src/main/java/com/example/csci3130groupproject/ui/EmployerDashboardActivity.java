@@ -1,10 +1,10 @@
 package com.example.csci3130groupproject.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.csci3130groupproject.R;
 import com.example.csci3130groupproject.core.Job;
 import com.example.csci3130groupproject.core.LogoutHelper;
+import com.example.csci3130groupproject.util.JobCategoryUtil;
 import com.example.csci3130groupproject.util.JobDetailsFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,12 +25,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EmployerDashboardActivity extends AppCompatActivity {
 
     private static final String DB_URL = "https://csci3130groupproject-c46e6-default-rtdb.firebaseio.com/";
 
-    private Button btnProfile, btnPostJob, btnLogout;
+    private Button btnProfile, btnPostJob, btnLogout, btnApplyCategoryFilter, btnClearCategoryFilter;
     private LinearLayout layoutPostedJobs;
+    private EditText etCategoryFilter;
+    private final List<JobWithRef> employerJobs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +45,9 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         btnProfile = findViewById(R.id.btnProfile);
         btnPostJob = findViewById(R.id.btnPostJob);
         btnLogout = findViewById(R.id.btnLogout);
+        btnApplyCategoryFilter = findViewById(R.id.btnApplyCategoryFilter);
+        btnClearCategoryFilter = findViewById(R.id.btnClearCategoryFilter);
+        etCategoryFilter = findViewById(R.id.etCategoryFilter);
         layoutPostedJobs = findViewById(R.id.layoutPostedJobs);
 
         LogoutHelper.setupLogoutButton(this);
@@ -51,14 +60,18 @@ public class EmployerDashboardActivity extends AppCompatActivity {
             return;
         }
 
-        btnProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(EmployerDashboardActivity.this, ProfileActivity.class);
-            startActivity(intent);
-        });
+        btnProfile.setOnClickListener(v ->
+                startActivity(new Intent(EmployerDashboardActivity.this, ProfileActivity.class)));
 
-        btnPostJob.setOnClickListener(v -> {
-            Intent intent = new Intent(EmployerDashboardActivity.this, PostJobActivity.class);
-            startActivity(intent);
+        btnPostJob.setOnClickListener(v ->
+                startActivity(new Intent(EmployerDashboardActivity.this, PostJobActivity.class)));
+
+        btnApplyCategoryFilter.setOnClickListener(v ->
+                renderJobs(etCategoryFilter.getText().toString()));
+
+        btnClearCategoryFilter.setOnClickListener(v -> {
+            etCategoryFilter.setText("");
+            renderJobs("");
         });
 
         loadEmployerJobs();
@@ -81,25 +94,21 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         String uid = currentUser.getUid();
 
-        DatabaseReference jobsRef = FirebaseDatabase.getInstance(DB_URL)
-                .getReference("jobs");
+        DatabaseReference jobsRef = FirebaseDatabase.getInstance(DB_URL).getReference("jobs");
 
         jobsRef.orderByChild("employerId").equalTo(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        employerJobs.clear();
                         layoutPostedJobs.removeAllViews();
 
                         if (!snapshot.exists()) {
-                            TextView emptyView = new TextView(EmployerDashboardActivity.this);
-                            emptyView.setText("No jobs posted yet.");
-                            emptyView.setTextSize(16f);
-                            layoutPostedJobs.addView(emptyView);
+                            showEmptyMessage("No jobs posted yet.");
                             return;
                         }
 
                         for (DataSnapshot jobSnap : snapshot.getChildren()) {
-                            // Load full job data instead of only category and date
                             Job job = new Job();
                             job.title = jobSnap.child("title").getValue(String.class);
                             job.category = jobSnap.child("category").getValue(String.class);
@@ -114,16 +123,20 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                             Double duration = jobSnap.child("expectedDurationHours").getValue(Double.class);
                             job.expectedDurationHours = duration != null ? duration : 0.0;
 
+                            if (job.title == null || job.title.trim().isEmpty()) {
+                                job.title = "Untitled Job";
+                            }
                             if (job.category == null || job.category.trim().isEmpty()) {
-                                job.category = "Untitled Job";
+                                job.category = "Uncategorized";
                             }
                             if (job.date == null || job.date.trim().isEmpty()) {
                                 job.date = "No Date";
                             }
-                            String jobRef = jobSnap.getKey();
-                            // Pass full Job object to the row
-                            addJobRow(job, jobRef);
+
+                            employerJobs.add(new JobWithRef(job, jobSnap.getKey()));
                         }
+
+                        renderJobs(etCategoryFilter.getText().toString());
                     }
 
                     @Override
@@ -135,21 +148,39 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                 });
     }
 
+    private void renderJobs(String categoryFilter) {
+        layoutPostedJobs.removeAllViews();
+        boolean hasMatch = false;
 
-    // Method now accepts Job instead of only job title
+        for (JobWithRef item : employerJobs) {
+            if (JobCategoryUtil.matchesFilter(item.job.category, categoryFilter)) {
+                addJobRow(item.job, item.jobRef);
+                hasMatch = true;
+            }
+        }
+
+        if (!hasMatch) {
+            showEmptyMessage("No jobs found for that category.");
+        }
+    }
+
+    private void showEmptyMessage(String message) {
+        TextView emptyView = new TextView(this);
+        emptyView.setText(message);
+        emptyView.setTextSize(16f);
+        layoutPostedJobs.addView(emptyView);
+    }
+
     private void addJobRow(Job job, String jobRef) {
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
 
-        // Line 1: Job title
-        // Use formatter for dashboard title
         TextView tvJobTitle = new TextView(this);
         tvJobTitle.setText(JobDetailsFormatter.dashboardTitle(job));
         tvJobTitle.setTextSize(18f);
         tvJobTitle.setTypeface(null, android.graphics.Typeface.BOLD);
 
-        // Line 2: Category - Date
         TextView tvJobSubtitle = new TextView(this);
         tvJobSubtitle.setText((job.category != null ? job.category : "") + " - " + (job.date != null ? job.date : ""));
         tvJobSubtitle.setTextSize(14f);
@@ -164,8 +195,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
 
         Button btnApplicants = new Button(this);
         btnApplicants.setText("Applicants");
-        
-        // set description to grab label for tests
         btnApplicants.setContentDescription(job.title + "-applicants");
 
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
@@ -174,7 +203,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
                 1f
         );
         buttonParams.setMargins(0, 0, 16, 0);
-
         btnDetails.setLayoutParams(buttonParams);
 
         LinearLayout.LayoutParams buttonParams2 = new LinearLayout.LayoutParams(
@@ -185,7 +213,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         btnApplicants.setLayoutParams(buttonParams2);
 
         btnDetails.setOnClickListener(v -> {
-            //open job details page and send full job info
             Intent intent = new Intent(EmployerDashboardActivity.this, JobDetailsActivity.class);
             intent.putExtra("title", job.title);
             intent.putExtra("category", job.category);
@@ -199,7 +226,6 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         });
 
         btnApplicants.setOnClickListener(v -> {
-            // open application review
             Intent intent = new Intent(EmployerDashboardActivity.this, ApplicationReviewActivity.class);
             intent.putExtra("jobRef", jobRef);
             startActivity(intent);
@@ -223,5 +249,15 @@ public class EmployerDashboardActivity extends AppCompatActivity {
         jobContainer.addView(divider);
 
         layoutPostedJobs.addView(jobContainer);
+    }
+
+    private static class JobWithRef {
+        final Job job;
+        final String jobRef;
+
+        JobWithRef(Job job, String jobRef) {
+            this.job = job;
+            this.jobRef = jobRef;
+        }
     }
 }
