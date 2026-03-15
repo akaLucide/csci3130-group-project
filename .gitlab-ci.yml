@@ -1,18 +1,18 @@
 # Try simplified version of pipeline that just runs the tests
 
-image: eclipse-temurin:17-jdk-jammy
+image: ghcr.io/cirruslabs/android-sdk:33
 
 stages:
   - test
 
-before_script:
-  - chmod +x ./gradlew
-
 unit_tests:
   stage: test
   script:
-    - ./gradlew testDebugUnitTest
+    - chmod +x gradlew
+    - ./gradlew testDebugUnitTest --info
   artifacts:
     when: always
     reports:
       junit: app/build/test-results/**/*.xml
+    paths:
+      - app/build/reports/tests/
