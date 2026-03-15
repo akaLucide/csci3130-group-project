@@ -4,9 +4,18 @@ import android.text.TextUtils;
 
 import java.util.Locale;
 
-// Evaluates whether a job matches all criteria in a search filter
+/**
+ * Evaluates whether a job matches all criteria in a search filter.
+ * Used to determine if a job should be included in search results.
+ */
 public class JobMatcher {
-    // Returns true only if the job satisfies every active filter field
+    /**
+     * Returns true only if the job satisfies every active filter field in the given filter.
+     *
+     * @param job The job to evaluate.
+     * @param f   The search filter containing user criteria.
+     * @return true if the job matches all filter criteria, false otherwise.
+     */
     public boolean matches(Job job, JobSearchFilter f) {
         if (job == null || f == null) return false;
 
