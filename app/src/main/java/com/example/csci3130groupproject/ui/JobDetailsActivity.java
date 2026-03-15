@@ -23,6 +23,7 @@ public class JobDetailsActivity extends AppCompatActivity {
         tvJobDetails = findViewById(R.id.tvJobDetails);
         btnBackToResults = findViewById(R.id.btnBackToResults);
 
+        // Reconstruct Job object from intent extras passed by the dashboard
         Job job = new Job();
         job.title = getIntent().getStringExtra("title");
         job.category = getIntent().getStringExtra("category");
@@ -33,6 +34,7 @@ public class JobDetailsActivity extends AppCompatActivity {
         job.urgency = getIntent().getStringExtra("urgency");
         job.date = getIntent().getStringExtra("date");
 
+        // Format and display all job details using the shared formatter
         tvJobDetails.setText(JobDetailsFormatter.format(job));
 
         btnBackToResults.setOnClickListener(v -> finish());
