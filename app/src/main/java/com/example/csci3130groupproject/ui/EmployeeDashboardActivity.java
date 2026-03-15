@@ -9,10 +9,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.csci3130groupproject.R;
 import com.example.csci3130groupproject.core.Job;
+import com.example.csci3130groupproject.core.JobMatcher;
+import com.example.csci3130groupproject.core.JobSearchFilter;
 import com.example.csci3130groupproject.core.LogoutHelper;
 import com.example.csci3130groupproject.util.JobDetailsFormatter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,9 +29,13 @@ import com.google.firebase.database.ValueEventListener;
 public class EmployeeDashboardActivity extends AppCompatActivity {
 
     private static final String DB_URL = "https://csci3130groupproject-c46e6-default-rtdb.firebaseio.com/";
+    private static final int REQUEST_SEARCH = 1;
 
     private Button btnProfile, btnMapView, btnSearch, btnLogout;
     private LinearLayout layoutPostedJobs;
+    private TextView tvPostedJobsTitle;
+
+    private JobSearchFilter activeFilter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         btnSearch = findViewById(R.id.btnSearch);
         btnLogout = findViewById(R.id.btnLogout);
         layoutPostedJobs = findViewById(R.id.layoutPostedJobs);
+        tvPostedJobsTitle = findViewById(R.id.tvPostedJobsTitle);
 
         LogoutHelper.setupLogoutButton(this);
 
@@ -62,19 +70,33 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
 
         btnSearch.setOnClickListener(v -> {
             Intent searchIntent = new Intent(EmployeeDashboardActivity.this, JobSearchPageActivity.class);
-            startActivity(searchIntent);
+            startActivityForResult(searchIntent, REQUEST_SEARCH);
         });
 
-        loadAllJobs();
+        loadJobs();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        loadAllJobs();
+        loadJobs();
     }
 
-    private void loadAllJobs() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SEARCH && resultCode == RESULT_OK && data != null) {
+            activeFilter = new JobSearchFilter();
+            activeFilter.titleQuery = data.getStringExtra("titleQuery");
+            activeFilter.minSalary = data.getDoubleExtra("minSalary", 0.0);
+            activeFilter.maxSalary = data.getDoubleExtra("maxSalary", Double.MAX_VALUE);
+            activeFilter.maxDuration = data.getDoubleExtra("maxDuration", Double.MAX_VALUE);
+            activeFilter.vicinityKm = data.getDoubleExtra("vicinityKm", Double.MAX_VALUE);
+            loadJobs();
+        }
+    }
+
+    private void loadJobs() {
         layoutPostedJobs.removeAllViews();
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -84,6 +106,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         }
 
         DatabaseReference jobsRef = FirebaseDatabase.getInstance(DB_URL).getReference("jobs");
+        final JobMatcher matcher = new JobMatcher();
 
         jobsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -91,6 +114,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                 layoutPostedJobs.removeAllViews();
 
                 if (!snapshot.exists()) {
+                    tvPostedJobsTitle.setText("Results: 0");
                     TextView emptyView = new TextView(EmployeeDashboardActivity.this);
                     emptyView.setText("No jobs available yet.");
                     emptyView.setTextSize(16f);
@@ -98,6 +122,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                     return;
                 }
 
+                int count = 0;
                 for (DataSnapshot jobSnap : snapshot.getChildren()) {
                     String jobId = jobSnap.getKey();
 
@@ -122,7 +147,26 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
                         job.date = "No Date";
                     }
 
+                    // Apply filter if one is active
+                    if (activeFilter != null && !matcher.matches(job, activeFilter)) {
+                        continue;
+                    }
+
                     addJobRow(jobId, job);
+                    count++;
+                }
+
+                if (activeFilter != null) {
+                    tvPostedJobsTitle.setText("Search Results: " + count);
+                } else {
+                    tvPostedJobsTitle.setText("Newest Posted Jobs (" + count + ")");
+                }
+
+                if (count == 0) {
+                    TextView emptyView = new TextView(EmployeeDashboardActivity.this);
+                    emptyView.setText("No matching jobs found.");
+                    emptyView.setTextSize(16f);
+                    layoutPostedJobs.addView(emptyView);
                 }
             }
 
@@ -184,16 +228,7 @@ public class EmployeeDashboardActivity extends AppCompatActivity {
         btnApply.setLayoutParams(buttonParams2);
 
         btnDetails.setOnClickListener(v -> {
-            Intent intent = new Intent(EmployeeDashboardActivity.this, JobDetailsActivity.class);
-            intent.putExtra("title", job.title);
-            intent.putExtra("category", job.category);
-            intent.putExtra("description", job.description);
-            intent.putExtra("locationAddress", job.locationAddress);
-            intent.putExtra("salaryPerHour", job.salaryPerHour);
-            intent.putExtra("expectedDurationHours", job.expectedDurationHours);
-            intent.putExtra("urgency", job.urgency);
-            intent.putExtra("date", job.date);
-            startActivity(intent);
+            // placeholder for job details page
         });
 
         btnApply.setOnClickListener(v -> {

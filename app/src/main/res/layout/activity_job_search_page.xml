@@ -75,20 +75,4 @@
         android:backgroundTint="@color/qc_primary_blue_dark"
         android:textColor="@android:color/white" />
 
-    <TextView
-        android:id="@+id/tvResults"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Results: 0"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp" />
-
-    <TextView
-        android:id="@+id/tvResultsList"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="10dp"
-        android:text="No results yet."
-        android:background="#F2F2F2" />
 </LinearLayout>
