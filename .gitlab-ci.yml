@@ -85,4 +85,4 @@ debugTests:
   interruptible: true
   stage: test
   script:
-    - ./gradlew -Pci --console=plain :app:testDebug
+    - ./gradlew :app:testDebugUnitTest --info
