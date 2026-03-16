@@ -25,6 +25,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.File;
 import java.io.FileOutputStream;
 
+/**
+ * Activity that allows an employer to review applicants for a specific job posting.
+ * Displays a list of applicants with options to contact, favourite, and view resumes.
+ */
 public class ApplicationReviewActivity extends AppCompatActivity {
 
     private static final String DB_URL = "https://csci3130groupproject-c46e6-default-rtdb.firebaseio.com/";
@@ -35,6 +39,11 @@ public class ApplicationReviewActivity extends AppCompatActivity {
     Boolean fav;
     LinearLayout layoutApplicants;
 
+    /**
+     * Initializes the activity, sets up UI components, buttons, and loads applicants.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -48,6 +57,9 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         loadApplicants();
     }
 
+    /**
+     * Initializes all UI components and retrieves the job reference passed via intent.
+     */
     // sets up UI components
     private void initComponents(){
         // retrieve key from job posting based on what job you clicked
@@ -62,6 +74,9 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         layoutApplicants = findViewById(R.id.layoutApplicants);
     }
 
+    /**
+     * Sets up click listeners for the back and favourites filter buttons.
+     */
     // sets up buttons
     private void buttonSetup(){
         backbtn.setOnClickListener(v -> {
@@ -75,6 +90,10 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Fetches all applicants for the current job from Firebase and populates the UI.
+     * If the favourites filter is active, only favourited applicants are displayed.
+     */
     private void loadApplicants(){
         layoutApplicants.removeAllViews(); // remove all boxes
 
@@ -139,6 +158,14 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Dynamically creates and adds a row for a single applicant to the applicants layout.
+     * Each row displays the applicant's name and email, with Contact, Favourite, and Resume buttons.
+     *
+     * @param details      The display string showing the applicant's name and email.
+     * @param appID        The unique Firebase key for the applicant.
+     * @param base64Resume The Base64-encoded resume string for the applicant.
+     */
     private void addApplicantRow(String details, String appID, String base64Resume){
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);

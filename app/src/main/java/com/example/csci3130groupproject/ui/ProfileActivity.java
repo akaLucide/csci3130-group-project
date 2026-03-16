@@ -18,6 +18,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * Activity that displays the current user's profile summary including name, email, and role.
+ * For employee users, also displays a list of jobs they have applied to.
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     private static final String DB_URL = "https://csci3130groupproject-c46e6-default-rtdb.firebaseio.com/";
@@ -25,6 +29,12 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvName, tvEmail, tvRole, tvAppliedJobsTitle;
     private LinearLayout layoutAppliedJobs;
 
+    /**
+     * Initializes the activity, binds UI components, hides the applied jobs section
+     * by default, and triggers profile loading from Firebase.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +57,11 @@ public class ProfileActivity extends AppCompatActivity {
         loadProfileSummary();
     }
 
+    /**
+     * Fetches the current user's profile data from Firebase and populates the UI.
+     * If the user's role is employee, reveals the applied jobs section and calls
+     * {@link #loadAppliedJobs()}.
+     */
     private void loadProfileSummary() {
         tvName.setText("Name: Loading...");
         tvEmail.setText("Email: Loading...");

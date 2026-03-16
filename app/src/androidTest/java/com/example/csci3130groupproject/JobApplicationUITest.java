@@ -73,7 +73,7 @@ public class JobApplicationUITest {
      * Acceptance Test 3: Job Application Navigation
      * Given I am on the employee dashboard,
      * when I select apply to a job,
-     * then I am taken to a custom screen to attach cover letter and resume and submit my application.
+     * then I am taken to an application screen to attach a resume and submit my application.
      */
     @Test
     public void testJobApplicationNavigation() throws UiObjectNotFoundException {
@@ -89,7 +89,7 @@ public class JobApplicationUITest {
     }
 
     /**
-     * Acceptance Test 4: Required Files are Attached
+     * Acceptance Test 3: Required Files are Attached
      * Given I am on the application screen,
      * when I select apply without attaching a resume,
      * then the app checks that a resume is attached before allowing the application to submit.
@@ -113,7 +113,7 @@ public class JobApplicationUITest {
     }
 
     /**
-     * Acceptance Test 5: No Crash on Errors
+     * Acceptance Test 4: No Crash on Errors
      * Given the application fails (missing attachments),
      * when the app handles it,
      * then the app does not crash and shows a readable message.
@@ -139,7 +139,7 @@ public class JobApplicationUITest {
     }
 
     /**
-     * Acceptance Test 6: Job Application Duplicates
+     * Acceptance Test 5: Job Application Duplicates
      * Given I am on the employee dashboard,
      * when I select apply to a job I have already submitted an application for,
      * then I remain on the dashboard and am given a toast notification saying I have already applied for this job.
