@@ -53,7 +53,7 @@ public class ApplicationReviewUITest {
 
     @Test
     public void applicationPageVisible() throws UiObjectNotFoundException{
-        UiObject applicantsBtn = device.findObject(new UiSelector().description("Babysitting - 2026-03-11-applicants"));
+        UiObject applicantsBtn = device.findObject(new UiSelector().description("I need a babysitter!-applicants"));
         applicantsBtn.clickAndWaitForNewWindow();
         UiObject backbtn = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/backToEmployerDashboardBtn"));
         assertTrue(backbtn.exists());
@@ -61,16 +61,17 @@ public class ApplicationReviewUITest {
 
     @Test
     public void applicantsExist() throws UiObjectNotFoundException, InterruptedException {
-        UiObject applicantsBtn = device.findObject(new UiSelector().description("Babysitting - 2026-03-11-applicants"));
+        UiObject applicantsBtn = device.findObject(new UiSelector().description("I need a babysitter!-applicants"));
         applicantsBtn.clickAndWaitForNewWindow();
         Thread.sleep(3000);
         UiObject numApplicants = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/numApplicantsTextView"));
+        // Update this to match the actual number of applicants for 'I need a babysitter!'
         assertEquals("1 applicants", numApplicants.getText());
     }
 
     @Test
     public void noApplications() throws UiObjectNotFoundException{
-        UiObject applicantsBtn = device.findObject(new UiSelector().description("Mowing the lawn - 2026-03-11-applicants"));
+        UiObject applicantsBtn = device.findObject(new UiSelector().description("Mow my lawn-applicants"));
         applicantsBtn.clickAndWaitForNewWindow();
         UiObject numApplicants = device.findObject(new UiSelector().resourceId("com.example.csci3130groupproject:id/numApplicantsTextView"));
         assertEquals("0 applicants", numApplicants.getText());
