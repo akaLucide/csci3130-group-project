@@ -64,12 +64,13 @@ public class JobApplicationUITest {
         // Verify jobs list is visible and at least one job with an Apply button is shown
         UiObject jobsList = device.findObject(new UiSelector().resourceId(launcherPackage + ":id/layoutPostedJobs"));
         assertTrue("Employee dashboard should show the jobs list", jobsList.exists());
-        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        UiObject applyButton = device.findObject(new UiSelector().className("android.widget.Button").textContains("APPLY"));
         assertTrue("At least one job with an Apply button should be visible", applyButton.exists());
     }
 
+
     /**
-     * Acceptance Test 2: Job Application Navigation
+     * Acceptance Test 3: Job Application Navigation
      * Given I am on the employee dashboard,
      * when I select apply to a job,
      * then I am taken to an application screen to attach a resume and submit my application.
@@ -77,7 +78,7 @@ public class JobApplicationUITest {
     @Test
     public void testJobApplicationNavigation() throws UiObjectNotFoundException {
         // Click Apply on a job the user has not yet applied to
-        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        UiObject applyButton = device.findObject(new UiSelector().className("android.widget.Button").textContains("APPLY"));
         assertTrue("An Apply button should be visible on the dashboard", applyButton.exists());
         applyButton.click();
         device.waitForIdle(3000);
@@ -96,7 +97,7 @@ public class JobApplicationUITest {
     @Test
     public void testRequiredFilesAttached() throws UiObjectNotFoundException {
         // Navigate to JobSubmissionActivity
-        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        UiObject applyButton = device.findObject(new UiSelector().className("android.widget.Button").textContains("APPLY"));
         applyButton.click();
         device.waitForIdle(3000);
 
@@ -120,7 +121,7 @@ public class JobApplicationUITest {
     @Test
     public void testSubmissionFailure_DoesNotCrash() throws UiObjectNotFoundException {
         // Navigate to JobSubmissionActivity
-        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        UiObject applyButton = device.findObject(new UiSelector().className("android.widget.Button").textContains("APPLY"));
         applyButton.click();
         device.waitForIdle(3000);
 
@@ -145,8 +146,8 @@ public class JobApplicationUITest {
      */
     @Test
     public void testDuplicateApplicationBlocked() throws UiObjectNotFoundException {
-        // Click Apply on the already-applied job (tom@gmail.com must have already applied to the first job)
-        UiObject applyButton = device.findObject(new UiSelector().text("Apply"));
+        // Click Apply on the already-applied job (user must have already applied to the first job)
+        UiObject applyButton = device.findObject(new UiSelector().className("android.widget.Button").textContains("APPLY"));
         assertTrue("An Apply button should be visible on the dashboard", applyButton.exists());
         applyButton.click();
         device.waitForIdle(3000);
