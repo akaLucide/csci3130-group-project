@@ -2,7 +2,9 @@ package com.example.csci3130groupproject.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.example.csci3130groupproject.R;
 import com.google.firebase.database.DataSnapshot;
@@ -18,6 +21,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class ApplicationReviewActivity extends AppCompatActivity {
 
@@ -109,17 +115,19 @@ public class ApplicationReviewActivity extends AppCompatActivity {
                         // grab details from applicant to display in layout
                         String name = applicant.child("name").getValue(String.class);
                         String email = applicant.child("email").getValue(String.class);
+                        String resume = applicant.child("resume").getValue(String.class);
                         String title = name + " - " + email;
                         // call row to be created, pass applicant title and applicant id (to be used in favourite button)
-                        addApplicantRow(title, id);
+                        addApplicantRow(title, id, resume);
 
-                    // if not favourited display all applicants
+                        // if not favourited display all applicants
                     }else if(!fav){
                         // grab details for loading layout row
                         String name = applicant.child("name").getValue(String.class);
                         String email = applicant.child("email").getValue(String.class);
+                        String resume = applicant.child("resume").getValue(String.class);
                         String title = name + " - " + email;
-                        addApplicantRow(title, id);
+                        addApplicantRow(title, id, resume);
                     }
                 }
             }
@@ -131,7 +139,7 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         });
     }
 
-    private void addApplicantRow(String details, String appID){
+    private void addApplicantRow(String details, String appID, String base64Resume){
         LinearLayout jobContainer = new LinearLayout(this);
         jobContainer.setOrientation(LinearLayout.VERTICAL);
         jobContainer.setPadding(0, 0, 0, 24);
@@ -150,13 +158,20 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         Button btnFavourite = new Button(this);
         btnFavourite.setText("Favourite");
 
-        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f);
-        buttonParams.setMargins(0, 0, 16, 0);
+        Button btnViewResume = new Button(this);
+        btnViewResume.setText("Resume");
 
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f);
+        buttonParams.setMargins(0, 0, 8, 0);
         btnContact.setLayoutParams(buttonParams);
 
         LinearLayout.LayoutParams buttonParams2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f);
+        buttonParams2.setMargins(0, 0, 8, 0);
         btnFavourite.setLayoutParams(buttonParams2);
+
+        LinearLayout.LayoutParams buttonParams3 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f);
+        btnViewResume.setLayoutParams(buttonParams3);
+
         btnContact.setOnClickListener(v -> {
             // placeholder, add page/contact logic here if necessary later
         });
@@ -186,8 +201,18 @@ public class ApplicationReviewActivity extends AppCompatActivity {
             });
         });
 
+        // show resume when button is clicked
+        btnViewResume.setOnClickListener(v -> {
+            if (base64Resume == null || base64Resume.isEmpty()) {
+                Toast.makeText(this, "No resume available.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            openResumeFromBase64(base64Resume, appID);
+        });
+
         buttonRow.addView(btnContact);
         buttonRow.addView(btnFavourite);
+        buttonRow.addView(btnViewResume);
 
         View divider = new View(this);
         LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
@@ -203,5 +228,38 @@ public class ApplicationReviewActivity extends AppCompatActivity {
         jobContainer.addView(divider);
 
         layoutApplicants.addView(jobContainer);
+    }
+
+    /**
+     * Base 64 approach handling from employers side.
+     * converts base64 string into a readable pdf so the employer can view it
+     * Pair programmed: Andrew G as driver and Braedon M as reviewer
+     *
+     * @param base64Resume: long string to be converted
+     * @param appID: unique identifier for the applicant
+     */
+    private void openResumeFromBase64(String base64Resume, String appID) {
+        try {
+            byte[] pdfBytes = Base64.decode(base64Resume, Base64.DEFAULT);
+
+            File pdfFile = new File(getCacheDir(), appID + "_resume.pdf");
+            FileOutputStream fos = new FileOutputStream(pdfFile);
+            fos.write(pdfBytes);
+            fos.close();
+
+            Uri pdfUri = FileProvider.getUriForFile(
+                    this,
+                    getPackageName() + ".provider",
+                    pdfFile
+            );
+
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(pdfUri, "application/pdf");
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, "Open Resume"));
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Could not open resume: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }

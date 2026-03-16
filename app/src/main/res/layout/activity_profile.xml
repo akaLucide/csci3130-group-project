@@ -43,6 +43,22 @@
             android:textSize="18sp"
             android:layout_marginBottom="24dp" />
 
+        <TextView
+            android:id="@+id/tvAppliedJobsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jobs Applied To"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/layoutAppliedJobs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp" />
+
         <Button
             android:id="@+id/btnBackToDashboard"
             android:layout_width="match_parent"

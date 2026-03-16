@@ -2,6 +2,7 @@ package com.example.csci3130groupproject.ui;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +22,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final String DB_URL = "https://csci3130groupproject-c46e6-default-rtdb.firebaseio.com/";
 
-    private TextView tvName, tvEmail, tvRole;
+    private TextView tvName, tvEmail, tvRole, tvAppliedJobsTitle;
+    private LinearLayout layoutAppliedJobs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +34,15 @@ public class ProfileActivity extends AppCompatActivity {
         tvName = findViewById(R.id.tvName);
         tvEmail = findViewById(R.id.tvEmail);
         tvRole = findViewById(R.id.tvRole);
+        layoutAppliedJobs = findViewById(R.id.layoutAppliedJobs);
 
         btnBack.setOnClickListener(v -> finish());
+
+        // Hide the applied jobs section by default until role is confirmed
+        layoutAppliedJobs = findViewById(R.id.layoutAppliedJobs);
+        tvAppliedJobsTitle = findViewById(R.id.tvAppliedJobsTitle);
+        layoutAppliedJobs.setVisibility(android.view.View.GONE);
+        tvAppliedJobsTitle.setVisibility(android.view.View.GONE);
 
         loadProfileSummary();
     }
@@ -82,6 +91,13 @@ public class ProfileActivity extends AppCompatActivity {
                 if ((authEmail == null || authEmail.isEmpty()) && dbEmail != null && !dbEmail.isEmpty()) {
                     tvEmail.setText("Email: " + dbEmail);
                 }
+
+                // Only show applied jobs section for employees
+                if ("employee".equals(role)) {
+                    layoutAppliedJobs.setVisibility(android.view.View.VISIBLE);
+                    tvAppliedJobsTitle.setVisibility(android.view.View.VISIBLE);
+                    loadAppliedJobs();
+                }
             }
 
             @Override
@@ -89,6 +105,71 @@ public class ProfileActivity extends AppCompatActivity {
                 tvName.setText("Name: Not available");
                 tvRole.setText("Role: Not available");
                 Toast.makeText(ProfileActivity.this, "DB error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Loads a short list of applied jobs for the current user.
+     * This method will only be reached if the user in an employee.
+     *
+     * @method onDataChange:
+     * Nested method that checks if user is listed under applicants for each job posting
+     * The jobs that they are listed under will appear under this "Applied Jobs" section
+     */
+    private void loadAppliedJobs() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
+
+        // get current user
+        String uid = currentUser.getUid();
+
+        // get jobs from db
+        DatabaseReference jobsRef = FirebaseDatabase.getInstance(DB_URL).getReference("jobs");
+
+        jobsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                layoutAppliedJobs.removeAllViews();
+
+                if (!snapshot.exists()) return;
+
+                boolean hasApplied = false;
+
+                for (DataSnapshot jobSnap : snapshot.getChildren()) {
+                    // Check if current user's UID exists under this job's applicants
+                    if (jobSnap.child("applicants").child(uid).exists()) {
+                        hasApplied = true;
+
+                        //get category and date from job
+                        String category = jobSnap.child("category").getValue(String.class);
+                        String date = jobSnap.child("date").getValue(String.class);
+
+                        if (category == null || category.trim().isEmpty()) category = "Untitled Job";
+                        if (date == null || date.trim().isEmpty()) date = "No Date";
+
+                        // create new list item for employee's applied jobs list
+                        TextView tvJob = new TextView(ProfileActivity.this);
+                        tvJob.setText("• " + category + " - " + date);
+                        tvJob.setTextSize(15f);
+                        tvJob.setPadding(0, 4, 0, 4);
+                        layoutAppliedJobs.addView(tvJob);
+                    }
+                }
+
+                // show no applications yet if they haven't applied
+                if (!hasApplied) {
+                    TextView tvNone = new TextView(ProfileActivity.this);
+                    tvNone.setText("No applications yet.");
+                    tvNone.setTextSize(15f);
+                    layoutAppliedJobs.addView(tvNone);
+                }
+            }
+
+            // Error handling for db failure
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ProfileActivity.this, "Failed to load applications: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
